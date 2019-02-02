@@ -1,7 +1,7 @@
 # Личный проект «YetiCave»
 
 * Студент: [Максим Чернышов](https://up.htmlacademy.ru/php/8/user/178239).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Парфенов](https://htmlacademy.ru/profile/id926645).
 
 ---
 
