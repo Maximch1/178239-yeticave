@@ -42,8 +42,7 @@ $lots       = [
 ];
 
 function format_price($price) {
-    $numm = number_format(ceil($price), 0, null, ' ') . "<b class=\"rub\">р</b>";
-    return $numm;
+    return number_format(ceil($price), 0, null, ' ') . "<b class=\"rub\">р</b>";
 }
 ?>
 <!DOCTYPE html>
