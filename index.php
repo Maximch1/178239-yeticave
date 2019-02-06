@@ -40,8 +40,11 @@ $lots       = [
         'image' => 'img/lot-6.jpg'
     ]
 ];
+
+function format_price($price) {
+    return number_format(ceil($price), 0, null, ' ') . "<b class=\"rub\">р</b>";
+}
 ?>
-<?php //var_dump($items) ?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -112,7 +115,7 @@ $lots       = [
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">Стартовая цена</span>
-                                <span class="lot__cost"><?= $lot['price']; ?><b class="rub">р</b></span>
+                                <span class="lot__cost"><?= format_price($lot['price']); ?></span>
                             </div>
                             <div class="lot__timer timer">
                                 12:23
@@ -129,10 +132,11 @@ $lots       = [
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
-            <li class="nav__item">
-                <a href="pages/all-lots.html">Название категории</a>
-            </li>
+            <?php foreach ($categories as $category): ?>
+                <li class="nav__item">
+                    <a href="pages/all-lots.html"><?= $category ?></a>
+                </li>
+            <?php endforeach; ?>
         </ul>
     </nav>
     <div class="main-footer__bottom container">
