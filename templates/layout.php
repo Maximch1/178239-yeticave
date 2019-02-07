@@ -3,6 +3,8 @@
  * @var array $categories категории лотов
  * @var string $content контент основного шаблона
  * @var string $title заголовок страницы
+ * @var string $user_name имя пользователя
+ * @var string $is_auth определяет пользователь или нет
  */
 
 ?>
