@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("Europe/Moscow");
 $is_auth    = rand(0, 1);
 $user_name  = 'Maxim';
 $categories = ["Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"];
@@ -45,7 +46,8 @@ require_once ('functions.php');
 
 $content = include_template('index.php', [
     'categories' => $categories,
-    'lots' => $lots
+    'lots' => $lots,
+    'time_to_midnight' => time_to_midnight()
 ]);
 
 $layout = include_template('layout.php', [

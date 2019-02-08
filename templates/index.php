@@ -2,6 +2,7 @@
 /**
  * @var array $categories категории лотов
  * @var array $lots список лотов
+ * @var string $time_to_midnight время до полуночи
  */
 ?>
 <section class="promo">
@@ -34,7 +35,7 @@
                             <span class="lot__cost"><?= format_price(htmlspecialchars($lot['price'])); ?></span>
                         </div>
                         <div class="lot__timer timer">
-                            12:23
+                            <?= $time_to_midnight; ?>
                         </div>
                     </div>
                 </div>

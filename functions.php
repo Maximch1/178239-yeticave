@@ -21,3 +21,7 @@ function format_price($price) {
     return number_format(ceil($price), 0, null, ' ') . "<b class=\"rub\">р</b>";
 }
 
+function time_to_midnight (){
+    $secs_to_midnight = strtotime('tomorrow') - time();
+    return floor($secs_to_midnight / 3600).":".floor(($secs_to_midnight % 3600) / 60);
+};
