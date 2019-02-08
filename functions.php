@@ -23,7 +23,7 @@ function format_price($price) {
 
 function time_to_midnight (){
     $secs_to_midnight = strtotime('tomorrow') - time();
-    $hours = sprintf("%'.02d\n", floor($secs_to_midnight / 3600));
-    $minutes = sprintf("%'.02d\n", floor(($secs_to_midnight % 3600) / 60));
+    $hours = sprintf("%'.02d", floor($secs_to_midnight / 3600));
+    $minutes = sprintf("%'.02d", floor(($secs_to_midnight % 3600) / 60));
     return $hours.":".$minutes;
 };
