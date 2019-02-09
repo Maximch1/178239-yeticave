@@ -15,7 +15,9 @@ CREATE TABLE users (
   name INT NOT NULL UNIQUE,
   password VARCHAR(32) NOT NULL,
   contacts TEXT NOT NULL,
-  avatar VARCHAR(255)
+  avatar VARCHAR(255),
+  lot_id INT NOT NULL,
+  bet_id INT NOT NULL
 );
 
 CREATE TABLE lot (
@@ -26,13 +28,22 @@ CREATE TABLE lot (
   category_id INT NOT NULL,
   price CHAR(7) NOT NULL,
   end_date DATETIME NOT NULL,
-  step_rate INT NOT NULL
+  step_rate INT NOT NULL,
+  users_id INT NOT NULL,
+  winner_id INT
+);
+
+CREATE TABLE bet (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  rate CHAR(7) NOT NULL,
+  users_id INT NOT NULL,
+  lot_id INT NOT NULL
 );
 
 CREATE UNIQUE INDEX category_id ON category(id);
 CREATE UNIQUE INDEX users_id ON users(id);
 CREATE UNIQUE INDEX lot_id ON lot(id);
+CREATE UNIQUE INDEX bet_id ON bet(id);
 
-CREATE INDEX category_title ON category(title);
-CREATE INDEX user_name ON users(name);
-CREATE INDEX lot_title ON lot(title);
+CREATE INDEX winner_id ON users(id);
