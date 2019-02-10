@@ -15,9 +15,7 @@ CREATE TABLE users (
   name INT NOT NULL UNIQUE,
   password VARCHAR(32) NOT NULL,
   contacts TEXT NOT NULL,
-  avatar VARCHAR(255),
-  lot_id INT NOT NULL,
-  bet_id INT NOT NULL
+  avatar VARCHAR(255)
 );
 
 CREATE TABLE lot (
