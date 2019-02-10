@@ -4,35 +4,48 @@ DEFAULT COLLATE utf8_general_ci;
 
 USE yeticave;
 
-CREATE TABLE category (
+CREATE TABLE categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  title CHAR(32) NOT NULL UNIQUE
+  title VARCHAR(20) NOT NULL UNIQUE
 );
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  email CHAR(128) NOT NULL UNIQUE,
-  name INT NOT NULL UNIQUE,
-  password VARCHAR(32) NOT NULL,
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   contacts TEXT NOT NULL,
   avatar VARCHAR(255)
 );
 
-CREATE TABLE lot (
+CREATE TABLE lots (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  title INT NOT NULL UNIQUE,
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  title VARCHAR(128) NOT NULL,
   description TEXT NOT NULL,
   image VARCHAR(255) NOT NULL,
   category_id INT NOT NULL,
-  price CHAR(7) NOT NULL,
-  end_date DATETIME NOT NULL,
-  step_rate INT NOT NULL
+  price INT NOT NULL,
+  end_time TIMESTAMP DEFAULT NULL,
+  step_rate INT NOT NULL,
+  user_id INT NOT NULL,
+  winner_id INT
 );
 
-CREATE UNIQUE INDEX category_id ON category(id);
-CREATE UNIQUE INDEX users_id ON users(id);
-CREATE UNIQUE INDEX lot_id ON lot(id);
+ALTER TABLE lots ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE lots ADD FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE lots ADD FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE;
 
-CREATE INDEX category_title ON category(title);
-CREATE INDEX user_name ON users(name);
-CREATE INDEX lot_title ON lot(title);
+
+CREATE TABLE bets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  rate INT NOT NULL,
+  users_id INT NOT NULL,
+  lot_id INT NOT NULL
+);
+
+ALTER TABLE bets ADD FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE bets ADD FOREIGN KEY (lot_id) REFERENCES lots(id) ON DELETE CASCADE;
+
