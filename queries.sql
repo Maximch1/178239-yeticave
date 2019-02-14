@@ -30,20 +30,20 @@ INSERT INTO bets (rate, user_id, lot_id) VALUE
 SELECT * FROM categories;
 
 -- получить самые новые, открытые лоты. Каждый лот должен включать название, стартовую цену, ссылку на изображение, цену, название категории;
-SELECT l.title Наименование_лота, l.price Начальная_цена, l.image Изображение, MAX(b.rate) Цена, c.title Категория
+SELECT l.title AS lot_title, l.price, l.image, MAX(b.rate), c.title AS category_title
 FROM lots l
   JOIN categories c ON c.id = l.category_id
   JOIN bets b ON l.id = b.lot_id
 WHERE l.winner_id IS NULL GROUP BY l.id ORDER BY l.id DESC;
 
 -- показать лот по его id. Получите также название категории, к которой принадлежит лот
-SELECT l.id, c.title
+SELECT l.id, l.title AS lot_title, c.title AS category_title
 FROM lots l
   JOIN categories c ON c.id = l.category_id
-WHERE l.id = '1';
+WHERE l.id = 1;
 
---  обновить название лота по его идентификатору;
-UPDATE lots SET title = 'Super Snowboard' WHERE id = '1';
+-- обновляем название лота, у которого id = 1;
+UPDATE lots SET title = 'Super Snowboard' WHERE id = 1;
 
 -- получить список самых свежих ставок для лота по его идентификатору;
 SELECT l.title, l.image, c.title, l.price, b.rate, u.name
@@ -52,7 +52,6 @@ FROM lots l
   JOIN bets b ON l.id = b.lot_id
   JOIN users u ON l.user_id = u.id
 WHERE l.id = 3 ORDER BY b.id DESC;
-
 
 -- получить список самых свежих ставок для лота по его идентификатору;
 SELECT *
