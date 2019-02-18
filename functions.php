@@ -27,3 +27,14 @@ function time_to_end ($str_time) {
     $minutes = sprintf("%'.02d", floor(($secs_to_midnight % 3600) / 60));
     return $hours.":".$minutes;
 };
+
+function db_connect ($config) {
+    $link = mysqli_connect($config["host"], $config["user"], $config["password"], $config["database"]);
+    if ($link == false) {
+        print ("Ошибка подключения: " . mysqli_connect_error());
+    }
+    else {
+        mysqli_set_charset($link, "utf8");
+        return $link;
+    }
+}

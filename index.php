@@ -7,8 +7,7 @@ require_once ('functions.php');
 require_once('mysql_helper.php');
 $config = require 'config.php';
 
-$link = mysqli_connect($config[db]["host"], $config[db]["user"], $config[db]["password"], $config[db]["database"]);
-mysqli_set_charset($link, "utf8");
+$link = db_connect($config['db']);
 
 $categories = get_categories($link, $categories_sql);
 $lots = get_lots($link, $lots_sql, '6');
