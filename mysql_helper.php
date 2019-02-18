@@ -44,8 +44,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
     return $stmt;
 }
 
-function get_categories($link, $sql) {
+function get_categories($link) {
     $result = [];
+    $sql = "SELECT * FROM categories";
     $stmt = db_get_prepare_stmt($link, $sql);
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
@@ -55,8 +56,11 @@ function get_categories($link, $sql) {
     return $result;
 }
 
-function get_lots($link, $l_sql, $limit) {
-    $sql = $l_sql . ' LIMIT ' . $limit . ';';
+function get_lots($link) {
+    $sql = "SELECT l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time
+             FROM lots l
+             JOIN categories c ON c.id = l.category_id
+             WHERE l.winner_id IS NULL";
     $result = [];
     $stmt = db_get_prepare_stmt($link, $sql);
     mysqli_stmt_execute($stmt);
