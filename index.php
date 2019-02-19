@@ -4,13 +4,12 @@ $is_auth    = rand(0, 1);
 $user_name  = 'Maxim';
 
 require_once ('functions.php');
-require_once('mysql_helper.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
-$categories = get_categories($link, $categories_sql);
-$lots = get_lots($link, $lots_sql, '6');
+$categories = get_categories($link);
+$lots = get_lots($link);
 
 $content = include_template('index.php', [
     'categories' => $categories,
