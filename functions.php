@@ -45,7 +45,7 @@ function get_categories($link) {
 }
 
 function get_lots($link) {
-    $sql = "SELECT l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time
+    $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time
              FROM lots l
              JOIN categories c ON c.id = l.category_id
              WHERE l.winner_id IS NULL";
