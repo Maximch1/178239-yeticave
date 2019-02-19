@@ -11,7 +11,7 @@
     <ul class="promo__list">
         <?php foreach ($categories as $category): ?>
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?= $category; ?></a>
+                <a class="promo__link" href="pages/all-lots.html"><?= $category['title']; ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -35,7 +35,7 @@
                             <span class="lot__cost"><?= format_price(htmlspecialchars($lot['price'])); ?></span>
                         </div>
                         <div class="lot__timer timer">
-                            <?= $time_to_midnight; ?>
+                            <?= time_to_end($lot['end_time']); ?>
                         </div>
                     </div>
                 </div>
