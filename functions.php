@@ -55,11 +55,16 @@ function get_lots($link) {
 }
 
 function get_lot($link, $lot_id) {
-    $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time, l.description, l.step_rate
+    $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time, l.description, l.step_rate,  MAX(b.rate) AS max_rate
              FROM lots l
              JOIN categories c ON c.id = l.category_id
-             WHERE l.winner_id IS NULL AND l.id = " . $lot_id . ";";
+             JOIN bets b ON l.id = b.lot_id
+             WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " GROUP BY l.id ORDER BY l.id DESC;";
+
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    return $lots;
+    if (!isset($lots[0])) {
+        return null;
+    }
+    return $lots[0];
 }

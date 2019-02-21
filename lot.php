@@ -11,10 +11,18 @@ $link = db_connect($config['db']);
 $categories = get_categories($link);
 $lots = get_lots($link);
 
-$lot_id = $_GET['id'] ?? null;
+if (!isset($_GET['id'])) {
+    die('Отсутствует id лота');
+}
+if (!is_numeric($_GET['id'])) {
+    die('Некорректный тип у id лота');
+}
+
+$lot_id = (int)$_GET['id'];
+
 $lot = get_lot($link, $lot_id);
 
-if ($lot[0]['id'] == null) {
+if (!$lot) {
     $content = include_template('404.php', [
         'categories' => $categories,
     ]);
@@ -22,7 +30,7 @@ if ($lot[0]['id'] == null) {
 else {
     $content = include_template('lot.php', [
         'categories' => $categories,
-        'lot'        => $lot[0],
+        'lot'        => $lot,
     ]);
 }
 
