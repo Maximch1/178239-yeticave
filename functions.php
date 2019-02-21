@@ -25,6 +25,12 @@ function time_to_end ($str_time) {
     $secs_to_midnight = strtotime($str_time) - time();
     $hours = sprintf("%'.02d", floor($secs_to_midnight / 3600));
     $minutes = sprintf("%'.02d", floor(($secs_to_midnight % 3600) / 60));
+    if ($hours <= 0) {
+        $hours = '00';
+    }
+    if ($minutes <= 0) {
+        $minutes = '00';
+    }
     return $hours.":".$minutes;
 };
 
