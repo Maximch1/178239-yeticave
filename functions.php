@@ -62,12 +62,70 @@ function get_lot($link, $lot_id) {
              FROM lots l
              JOIN categories c ON c.id = l.category_id
              JOIN bets b ON l.id = b.lot_id
-             WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " GROUP BY l.id ORDER BY l.id DESC;";
-
+             WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " ORDER BY l.id DESC;";
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    if (!isset($lots[0]['max_rate'])) {
+        $lots[0]['max_rate'] = $lots[0]['price'];
+    }
+
     if (!isset($lots[0])) {
         return null;
     }
     return $lots[0];
+}
+
+function db_get_prepare_stmt($link, $sql, $data = []) {
+    $stmt = mysqli_prepare($link, $sql);
+
+    if ($data) {
+        $types = '';
+        $stmt_data = [];
+
+        foreach ($data as $value) {
+            $type = null;
+
+            if (is_int($value)) {
+                $type = 'i';
+            }
+            else if (is_string($value)) {
+                $type = 's';
+            }
+            else if (is_double($value)) {
+                $type = 'd';
+            }
+
+            if ($type) {
+                $types .= $type;
+                $stmt_data[] = $value;
+            }
+        }
+
+        $values = array_merge([$stmt, $types], $stmt_data);
+
+        $func = 'mysqli_stmt_bind_param';
+        $func(...$values);
+    }
+
+    return $stmt;
+}
+
+function insert_lot($link) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $lots = $_POST['lot'];
+
+        $filename     = uniqid() . '.jpg';
+        $lots['path'] = 'img/' . $filename;
+        move_uploaded_file($_FILES['lot_img']['tmp_name'], 'img/' . $filename);
+        $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+
+        $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['path'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+        $res  = mysqli_stmt_execute($stmt);
+
+        if ($res) {
+            $lots_id = mysqli_insert_id($link);
+
+            header("Location: lot.php?id=" . $lots_id);
+        }
+    }
 }
