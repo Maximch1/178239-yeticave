@@ -10,7 +10,7 @@
     </ul>
 </nav>
 <main class="container">
-    <form class="form form--add-lot container <?= isset($errors['title']) ? "form--invalid" : null; ?>" action="add.php" method="post" enctype="multipart/form-data"><!-- form--invalid -->
+    <form class="form form--add-lot container <?= isset($errors) ? "form--invalid" : null; ?>" action="add.php" method="post" enctype="multipart/form-data"><!-- form--invalid -->
         <h2>Добавление лота</h2>
         <div class="form__container-two">
             <div class="form__item <?= isset($errors['title']) ? "form__item--invalid" : null; ?>"> <!-- form__item--invalid -->
@@ -67,11 +67,11 @@
             </div>
         </div>
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.
-        <ul>
-          <?php foreach($errors as $err => $val): ?>
-              <li><strong><?=$dict[$err];?>:</strong> <?=$val;?></li>
-          <?php endforeach; ?>
-        </ul>
+            <ul>
+              <?php foreach($errors as $err => $val): ?>
+                  <li><strong><?=$dict[$err];?>:</strong> <?=$val;?></li>
+              <?php endforeach; ?>
+            </ul>
         </span>
         <button type="submit" class="button">Добавить лот</button>
     </form>

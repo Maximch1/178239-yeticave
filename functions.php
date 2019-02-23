@@ -117,11 +117,6 @@ function insert_lot($link) {
         $required = ['title', 'description', 'category', 'price', 'end_time', 'step_rate'];
         $dict = ['title' => 'Наименование', 'description' => 'Описание', 'category' => 'Категория', 'price' => 'Начальная цена', 'end_time' => 'Дата окончания торгов', 'step_rate' => 'Шаг ставки', 'file' => 'Изображение'];
         $errors = [];
-        foreach ($required as $key) {
-            if (empty($_POST['lot'][$key])) {
-                $errors[$key] = 'Заполните это поле';
-            }
-        }
 
         if (!is_numeric($lots['price'])) {
             $errors['price'] = 'Введите число';
@@ -129,6 +124,12 @@ function insert_lot($link) {
 
         if (!is_numeric($lots['step_rate'])) {
             $errors['step_rate'] = 'Введите число';
+        }
+
+        foreach ($required as $key) {
+            if (empty($_POST['lot'][$key])) {
+                $errors[$key] = 'Заполните это поле';
+            }
         }
 
         if (($_FILES['lot_img']['tmp_name']) != null) {
