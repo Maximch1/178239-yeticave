@@ -11,11 +11,19 @@ $link = db_connect($config['db']);
 $categories = get_categories($link);
 $lot = insert_lot($link);
 
-
-
-$content = include_template('add.php', [
-    'categories' => $categories,
-]);
+if (count($lot)) {
+    $content = include_template('add.php', [
+        'categories' => $categories,
+        'errors' => $lot[0],
+        'dict' => $lot[1],
+        'lot' => $lot[2]
+    ]);
+}
+else {
+    $content = include_template('add.php', [
+        'categories' => $categories,
+    ]);
+}
 
 $layout = include_template('layout.php', [
     'content' => $content,

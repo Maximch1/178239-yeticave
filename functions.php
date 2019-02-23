@@ -114,18 +114,55 @@ function insert_lot($link) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $lots = $_POST['lot'];
 
-        $filename     = uniqid() . '.jpg';
-        $lots['path'] = 'img/' . $filename;
-        move_uploaded_file($_FILES['lot_img']['tmp_name'], 'img/' . $filename);
-        $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+        $required = ['title', 'description', 'category', 'price', 'end_time', 'step_rate'];
+        $dict = ['title' => 'Наименование', 'description' => 'Описание', 'category' => 'Категория', 'price' => 'Начальная цена', 'end_time' => 'Дата окончания торгов', 'step_rate' => 'Шаг ставки', 'file' => 'Изображение'];
+        $errors = [];
+        foreach ($required as $key) {
+            if (empty($_POST['lot'][$key])) {
+                $errors[$key] = 'Заполните это поле';
+            }
+        }
 
-        $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['path'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
-        $res  = mysqli_stmt_execute($stmt);
+        if (!is_numeric($lots['price'])) {
+            $errors['price'] = 'Введите число';
+        }
 
-        if ($res) {
-            $lots_id = mysqli_insert_id($link);
+        if (!is_numeric($lots['step_rate'])) {
+            $errors['step_rate'] = 'Введите число';
+        }
 
-            header("Location: lot.php?id=" . $lots_id);
+        if (($_FILES['lot_img']['tmp_name']) != null) {
+            $tmp_name = $_FILES['lot_img']['tmp_name'];
+            $filename     = uniqid() . '.jpg';
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $file_type = finfo_file($finfo, $tmp_name);
+            if ($file_type !== "image/jpeg") {
+                $errors['file'] = 'Загрузите картинку в формате JPEG';
+            }
+            else {
+                move_uploaded_file($tmp_name, 'img/' . $filename);
+                $lots['path'] = 'img/' . $filename;
+            }
+        }
+        else {
+            $errors['file'] = 'Вы не загрузили файл';
+        }
+        if (count($errors)) {
+            return array ($errors, $dict, $lots);
+        }
+        else {
+            $content = null;
+            $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+
+            $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['path'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+            $res  = mysqli_stmt_execute($stmt);
+
+            if ($res) {
+                $lots_id = mysqli_insert_id($link);
+
+                header("Location: lot.php?id=" . $lots_id);
+            }
         }
     }
 }
