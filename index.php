@@ -3,7 +3,9 @@ date_default_timezone_set("Europe/Moscow");
 $is_auth    = rand(0, 1);
 $user_name  = 'Maxim';
 
-require_once ('functions.php');
+require_once ('functions/template.php');
+require_once ('functions/db.php');
+require_once ('functions/validators.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
