@@ -44,11 +44,14 @@ function format_price($price) {
  */
 function time_to_end ($str_time) {
     $secs_to_end = strtotime($str_time) - time();
+
     if ($secs_to_end <= 0) {
         return '00:00';
     }
+
     $hours = sprintf("%'.02d", floor($secs_to_end / 3600));
     $minutes = sprintf("%'.02d", floor(($secs_to_end % 3600) / 60));
+
     return $hours.":".$minutes;
 }
 
@@ -56,14 +59,13 @@ function time_to_end ($str_time) {
 /**
  * Функция загружает файл в папку img/ и выводит имя файла в массив _POST
  * @param $img_name
- * @param $lot_data array массив в _POST
  *
  * @return mixed
  */
-function add_file ($img_name, $lot_data) {
+function add_file ($img_name) {
     $filename = uniqid() . '.jpg';
     move_uploaded_file($img_name, 'img/' . $filename);
-    $lot_data['path'] = 'img/' . $filename;
+    $lot_data = 'img/' . $filename;
 
     return $lot_data;
 }

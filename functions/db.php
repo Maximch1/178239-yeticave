@@ -8,9 +8,11 @@
  */
 function db_connect ($config) {
     $link = mysqli_connect($config["host"], $config["user"], $config["password"], $config["database"]);
+
     if ($link == false) {
         die ("Ошибка подключения: " . mysqli_connect_error());
     }
+
     mysqli_set_charset($link, "utf8");
     return $link;
 }
@@ -45,6 +47,7 @@ function get_lots($link) {
              WHERE l.winner_id IS NULL";
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
     return $lots;
 }
 
@@ -63,6 +66,7 @@ function get_lot($link, $lot_id) {
              WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " ORDER BY l.id DESC;";
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
     if (!isset($lots[0]['max_rate'])) {
         $lots[0]['max_rate'] = $lots[0]['price'];
     }
@@ -70,6 +74,7 @@ function get_lot($link, $lot_id) {
     if (!isset($lots[0])) {
         return null;
     }
+
     return $lots[0];
 }
 
@@ -118,17 +123,22 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 }
 
 /**
- * Функция добавляет лот в базу SQL
+ * Функция добавляет лот в базу SQL, возвращает id добавленного лота
  * @param $link mysqli Ресурс соединения
  * @param $lots array массив в _POST
  *
  * @return bool
  */
 function insert_lot ($link, $lots) {
-$sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+    $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
 
-$stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['path'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
-$res  = mysqli_stmt_execute($stmt);
+    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+    mysqli_stmt_execute($stmt);
+    $lots_id = mysqli_insert_id($link);
 
-return $res;
+    if (!isset($lots_id)) {
+        return null;
+    }
+
+    return $lots_id;
 }

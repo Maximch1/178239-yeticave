@@ -10,21 +10,30 @@ $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
-$lot_data = $_POST['lot'];
-$lot_img =  $_FILES['lot_img']['tmp_name'];
-
 $categories = get_categories($link);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!isset($_POST['lot'])) {
+        die('Некорректные данные для добавления лота');
+    }
+
+    if (!isset($_FILES['lot_img']['tmp_name'])) {
+        die('Некорректный файл');
+    }
+
+    $lot_data = $_POST['lot'];
+    $lot_img =  $_FILES['lot_img']['tmp_name'];
+
     $errors = valid_lot($lot_data);
     $errors = valid_file($lot_img, $errors);
+
     if (!count($errors)) {
-        $lot_data = add_file($lot_img, $lot_data);
-        $insert_lot = insert_lot($link, $lot_data);
+        $lot_data['img'] = add_file($lot_img);
+        $lot_id = insert_lot($link, $lot_data);
     }
-    if ($insert_lot) {
-        $lots_id = mysqli_insert_id($link);
-        header("Location: lot.php?id=" . $lots_id);
+
+    if ($lot_id) {
+        header("Location: lot.php?id=" . $lot_id);
     }
 
     if (count($errors)) {

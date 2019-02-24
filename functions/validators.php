@@ -28,6 +28,7 @@ function valid_lot($lots) {
     if (!isset($errors)) {
         return null;
     }
+
     return $errors;
 }
 
@@ -44,18 +45,21 @@ function valid_file($img_name, $errors) {
     if ($img_name != null) {
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $img_name);
+
         if ($file_type !== "image/jpeg") {
-            $errors['file'] = 'Загрузите картинку в формате JPEG';
+            $errors['img'] = 'Загрузите картинку в формате JPEG';
 
             return $errors;
         }
+
         if (!isset($errors)) {
             return null;
         }
+
         return $errors;
     }
     else {
-        $errors['file'] = 'Вы не загрузили файл';
+        $errors['img'] = 'Вы не загрузили файл';
         return $errors;
     }
 }
