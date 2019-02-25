@@ -11,6 +11,8 @@ $config = require 'config.php';
 $link = db_connect($config['db']);
 
 $categories = get_categories($link);
+$errors = [];
+$lot = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!isset($_POST['lot'])) {
@@ -24,8 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lot_data = $_POST['lot'];
     $lot_img =  $_FILES['lot_img']['tmp_name'];
 
-    $errors = valid_lot($lot_data);
-    $errors = valid_file($lot_img, $errors);
+    $errors = validate_lot($lot_data);
+    $file_errors = validate_file($lot_img);
+    $errors_date = check_date_format($lot_data);
+    $errors = array_merge($errors, $file_errors, $errors_date);
 
     if (!count($errors)) {
         $lot_data['img'] = add_file($lot_img);
@@ -34,21 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($lot_id) {
         header("Location: lot.php?id=" . $lot_id);
+        exit();
     }
+}
 
-    if (count($errors)) {
-        $content = include_template('add.php', [
-            'categories' => $categories,
-            'errors'     => $errors,
-            'lot'        => $lot_data
-        ]);
-    }
-}
-else {
-    $content = include_template('add.php', [
-        'categories' => $categories
-    ]);
-}
+$content = include_template('add.php', [
+    'categories' => $categories,
+    'errors'     => $errors,
+    'lot'        => $lot_data
+]);
 
 $layout = include_template('layout.php', [
     'content'    => $content,
