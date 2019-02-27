@@ -10,7 +10,7 @@
     </ul>
 </nav>
 <main class="container">
-    <form class="form form--add-lot container <?= isset($errors) ? "form--invalid" : null; ?>" action="add.php" method="post" enctype="multipart/form-data"><!-- form--invalid -->
+    <form class="form form--add-lot container <?= !empty($errors) ? "form--invalid" : null; ?>" action="add.php" method="post" enctype="multipart/form-data"><!-- form--invalid -->
         <h2>Добавление лота</h2>
         <div class="form__container-two">
             <div class="form__item <?= isset($errors['title']) ? "form__item--invalid" : null; ?>"> <!-- form__item--invalid -->
@@ -34,7 +34,7 @@
             <textarea id="message" name="lot[description]" placeholder="Напишите описание лота"><?= isset($lot['description']) ? $lot['description'] : null; ?></textarea> <!-- required -->
             <span class="form__error">Напишите описание лота</span>
         </div>
-        <div class="form__item form__item--file"> <!-- form__item--uploaded -->
+        <div class="form__item form__item--file <?= isset($errors['img']) ? "form__item--invalid" : null; ?>"> <!-- form__item--uploaded -->
             <label>Изображение</label>
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
@@ -48,6 +48,7 @@
                     <span>+ Добавить</span>
                 </label>
             </div>
+            <span class="form__error">Добавьте изображение</span>
         </div>
         <div class="form__container-three">
             <div class="form__item form__item--small <?= isset($errors['price']) ? "form__item--invalid" : null; ?>">

@@ -63,9 +63,10 @@ function time_to_end ($str_time) {
  * @return mixed
  */
 function add_file ($img_name) {
-    $filename = uniqid() . '.jpg';
-    move_uploaded_file($img_name, 'img/' . $filename);
-    $lot_data = 'img/' . $filename;
+    $file_type = pathinfo($img_name['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $file_type;
+    move_uploaded_file($img_name['tmp_name'], 'img/' . $filename);
+    $data = 'img/' . $filename;
 
-    return $lot_data;
+    return $data;
 }

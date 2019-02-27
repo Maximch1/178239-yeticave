@@ -139,7 +139,7 @@ function insert_lot ($link, $lots) {
     mysqli_stmt_execute($stmt);
     $lot_id = mysqli_insert_id($link);
 
-    if (!isset($lot_id)) {
+    if (!$lot_id) {
 
         return null;
     }
