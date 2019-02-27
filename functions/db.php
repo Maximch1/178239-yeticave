@@ -139,10 +139,35 @@ function insert_lot ($link, $lots) {
     mysqli_stmt_execute($stmt);
     $lot_id = mysqli_insert_id($link);
 
-    if (!isset($lot_id)) {
+    if (!$lot_id) {
 
         return null;
     }
 
     return $lot_id;
+}
+
+
+function get_sum_email ($link, $user) {
+    $email = mysqli_real_escape_string($link, $user['email']);
+    $sql   = "SELECT id FROM users WHERE email = '$email'";
+    $res   = mysqli_query($link, $sql);
+
+    return $res;
+}
+
+
+function insert_user ($link, $user) {
+    $password = password_hash($user['password'], PASSWORD_DEFAULT);
+    $sql = 'INSERT INTO users (create_time, email, name, password, contacts, avatar) VALUES (NOW(), ?, ?, ?, ?, ?)';
+
+    $stmt = db_get_prepare_stmt($link, $sql, [$user['email'], $user['name'], $password, $user['contacts'], $user['avatar']]);
+    $user_insert = mysqli_stmt_execute($stmt);
+
+    if ($user_insert === false) {
+
+        return null;
+    }
+
+    return $user_insert;
 }

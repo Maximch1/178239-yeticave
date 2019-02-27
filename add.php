@@ -2,6 +2,7 @@
 date_default_timezone_set("Europe/Moscow");
 $is_auth    = rand(0, 1);
 $user_name  = 'Maxim';
+$title = 'Добавление лота';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
@@ -19,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die('Некорректные данные для добавления лота');
     }
 
-    if (!isset($_FILES['lot_img']['tmp_name'])) {
+    if (!isset($_FILES['lot_img'])) {
         die('Некорректный файл');
     }
 
     $lot_data = $_POST['lot'];
-    $lot_img =  $_FILES['lot_img']['tmp_name'];
+    $lot_img =  $_FILES['lot_img'];
 
     $errors = validate_lot($lot_data);
     $file_errors = validate_file($lot_img);
@@ -52,7 +53,7 @@ $layout = include_template('layout.php', [
     'content'    => $content,
     'is_auth'    => $is_auth,
     'user_name'  => $user_name,
-    'title'      => 'Главная',
+    'title'      => $title,
     'categories' => $categories
 ]);
 
