@@ -135,7 +135,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 function insert_lot ($link, $lots) {
     $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
     mysqli_stmt_execute($stmt);
     $lot_id = mysqli_insert_id($link);
 
