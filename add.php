@@ -29,8 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $errors = validate_lot($lot_data);
     $file_errors = validate_file($lot_img);
-    $errors_date = check_date_format($lot_data);
-    $errors = array_merge($errors, $file_errors, $errors_date);
+    $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {
         $lot_data['img'] = add_file($lot_img);

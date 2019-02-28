@@ -9,12 +9,11 @@
 function db_connect ($config) {
     $link = mysqli_connect($config["host"], $config["user"], $config["password"], $config["database"]);
 
-    if ($link == false) {
+    if (!$link) {
         die ("Ошибка подключения: " . mysqli_connect_error());
     }
 
     mysqli_set_charset($link, "utf8");
-
     return $link;
 }
 
@@ -30,7 +29,6 @@ function get_categories($link) {
     $sql = "SELECT * FROM categories";
     $result = mysqli_query($link, $sql);
     $category = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     return $category;
 }
 
@@ -49,7 +47,6 @@ function get_lots($link) {
              WHERE l.winner_id IS NULL";
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     return $lots;
 }
 
@@ -74,10 +71,8 @@ function get_lot($link, $lot_id) {
     }
 
     if (!isset($lots[0])) {
-
         return null;
     }
-
     return $lots[0];
 }
 
@@ -121,7 +116,6 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
         $func = 'mysqli_stmt_bind_param';
         $func(...$values);
     }
-
     return $stmt;
 }
 
@@ -135,15 +129,13 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 function insert_lot ($link, $lots) {
     $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
     mysqli_stmt_execute($stmt);
     $lot_id = mysqli_insert_id($link);
 
     if (!$lot_id) {
-
         return null;
     }
-
     return $lot_id;
 }
 
