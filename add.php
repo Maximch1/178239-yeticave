@@ -7,6 +7,7 @@ $title = 'Добавление лота';
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators.php');
+require_once ('functions/validators_lot.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lot_img =  $_FILES['lot_img'];
 
     $errors = validate_lot($lot_data);
-    $file_errors = validate_file($lot_img);
+    $file_errors = validate_file($lot_img['tmp_name']);
     $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {

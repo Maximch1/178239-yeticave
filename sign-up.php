@@ -7,6 +7,7 @@ $title = 'Регистрация нового аккаунта';
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators.php');
+require_once ('functions/validators_user.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
@@ -21,11 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $user_data = $_POST['signup'];
-    $user_img =  $_FILES['user_img'];
+    $user_img =  $_FILES['avatar'];
 
-    $get_sum_email = get_sum_email($link, $user_data);
-    $errors = validate_user($user_data, $get_sum_email);
-    $file_errors = validate_file($user_img);
+    $errors = validate_user($link, $user_data);
+    $file_errors = validate_file($user_img['tmp_name']);
     $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {

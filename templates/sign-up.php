@@ -16,24 +16,24 @@
         <div class="form__item <?= isset($errors['email']) ? "form__item--invalid" : null; ?>"> <!-- form__item--invalid -->
             <label for="email">E-mail*</label>
             <input id="email" type="text" name="signup[email]" placeholder="Введите e-mail" value="<?= isset($signup['email']) ? $signup['email'] : null; ?>"> <!-- required -->
-            <span class="form__error"><?= $errors['email']; ?></span>
+            <span class="form__error"><?= isset($errors['email']) ? $errors['email'] : null; ?></span>
         </div>
         <div class="form__item <?= isset($errors['password']) ? "form__item--invalid" : null; ?>">
             <label for="password">Пароль*</label>
             <input id="password" type="text" name="signup[password]" placeholder="Введите пароль" value="<?= isset($signup['password']) ? $signup['password'] : null; ?>"><!-- required -->
-            <span class="form__error">Введите пароль</span>
+            <span class="form__error"><?= isset($errors['password']) ? $errors['password'] : null; ?></span>
         </div>
         <div class="form__item <?= isset($errors['name']) ? "form__item--invalid" : null; ?>">
             <label for="name">Имя*</label>
             <input id="name" type="text" name="signup[name]" placeholder="Введите имя" value="<?= isset($signup['name']) ? $signup['name'] : null; ?>"><!-- required -->
-            <span class="form__error">Введите имя</span>
+            <span class="form__error"><?= isset($errors['name']) ? $errors['name'] : null; ?></span>
         </div>
         <div class="form__item <?= isset($errors['contacts']) ? "form__item--invalid" : null; ?>">
             <label for="message">Контактные данные*</label>
             <textarea id="message" name="signup[contacts]" placeholder="Напишите как с вами связаться"><?= isset($signup['contacts']) ? $signup['contacts'] : null; ?></textarea><!-- required -->
-            <span class="form__error">Напишите как с вами связаться</span>
+            <span class="form__error"><?= isset($errors['contacts']) ? $errors['contacts'] : null; ?></span>
         </div>
-        <div class="form__item form__item--file form__item--last">
+        <div class="form__item form__item--file form__item--last <?= isset($errors['img']) ? "form__item--invalid" : null; ?>">
             <label>Аватар</label>
             <div class="preview">
                 <button class="preview__remove" type="button">x</button>
@@ -42,11 +42,12 @@
                 </div>
             </div>
             <div class="form__input-file">
-                <input class="visually-hidden" type="file" name="user_img" id="photo2" value="">
+                <input class="visually-hidden" type="file" name="avatar" id="photo2" value="">
                 <label for="photo2">
                     <span>+ Добавить</span>
                 </label>
             </div>
+            <span class="form__error"><?= isset($errors['img']) ? $errors['img'] : null; ?></span>
         </div>
         <span class="form__error form__error--bottom">Пожалуйста, исправьте ошибки в форме.</span>
         <button type="submit" class="button">Зарегистрироваться</button>
