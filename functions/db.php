@@ -124,7 +124,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  * @param $link mysqli Ресурс соединения
  * @param $lots array массив в _POST
  *
- * @return bool
+ * @return int|null
  */
 function insert_lot ($link, $lots) {
     $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
@@ -139,7 +139,13 @@ function insert_lot ($link, $lots) {
     return $lot_id;
 }
 
-
+/**
+ * Функция производит поиск в базе users по полю email, если находит, то возвращает количество найденных записей.
+ * @param $link mysqli Ресурс соединения
+ * @param $email string email
+ *
+ * @return int количество email
+ */
 function check_isset_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
     $sql   = "SELECT id FROM users WHERE email = '$email'";
@@ -148,7 +154,13 @@ function check_isset_email ($link, $email) {
     return mysqli_num_rows($res);
 }
 
-
+/**
+ * Функция добавляет юзера в базу SQL, возвращает id добавленного юзера
+ * @param $link mysqli Ресурс соединения
+ * @param $user array массив в _POST
+ *
+ * @return int|null
+ */
 function insert_user ($link, $user) {
     $password = password_hash($user['password'], PASSWORD_DEFAULT);
     $sql = 'INSERT INTO users (email, name, password, contacts, avatar) VALUES (?, ?, ?, ?, ?)';
