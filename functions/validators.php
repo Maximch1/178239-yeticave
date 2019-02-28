@@ -2,13 +2,12 @@
 
 
 /**
- * Функция проводит проверку на ошибки: заполненность полей + проверка начальной цены и шаг ставки на числовой тип.
+ * Функция проводит проверку на ошибки формы лота
  * @param $lot_data array массив в _POST, который надо проверить
  *
  * @return array массив ошибок
  */
 function validate_lot($lot_data) {
-//    $required = ['title', 'description', 'category_id', 'price', 'end_time', 'step_rate'];
     $errors   = [];
     if ($error = validate_lot_title($lot_data['title'])) {
         $errors['title'] = $error;
@@ -33,19 +32,13 @@ function validate_lot($lot_data) {
     if ($error = validate_lot_end_time($lot_data['end_time'])) {
         $errors['end_time'] = $error;
     }
-
-
-
-//    if ($error = validate_lot_end_time($lot_data['end_time'])) {
-//        $errors['end_time'] = $error;
-//    }
-
     return $errors;
 }
 
-
-/** Проверяет наименование лота
+/**
+ * Функция проверяет валидность наименования лота
  * @param $title string название лота
+ *
  * @return string|null текст ошибки
  */
 function validate_lot_title($title) {
@@ -60,7 +53,9 @@ function validate_lot_title($title) {
 }
 
 /**
+ * Функция проверяет валидность начальной цены
  * @param $price string название лота
+ *
  * @return string|null текст ошибки
  */
 function validate_lot_price($price) {
@@ -82,6 +77,12 @@ function validate_lot_price($price) {
     return null;
 }
 
+/**
+ * Функция проверяет валидность опсания
+ * @param $description string описание
+ *
+ * @return string|null
+ */
 function validate_lot_description($description) {
     if (empty($description)) {
         return 'Напишите описание лота';
@@ -93,12 +94,25 @@ function validate_lot_description($description) {
     return null;
 }
 
+/**
+ * Функция проверяет валидность категории
+ * @param $category_id  int ID категории
+ *
+ * @return string|null
+ */
 function validate_lot_category_id($category_id) {
     if (empty($category_id)) {
         return 'Выберите категорию';
     }
+    return null;
 }
 
+/**
+ * Функция проверяет валидность шаг ставки
+ * @param $step_rate string шаг ставки
+ *
+ * @return string|null
+ */
 function validate_lot_step_rate($step_rate) {
     if (empty($step_rate)) {
         return 'Введите шаг ставки';
@@ -108,18 +122,48 @@ function validate_lot_step_rate($step_rate) {
         return 'Значение должно быть числом';
     }
 
+    if (!is_int($step_rate)) {
+        return 'Введите целое число';
+    }
+
     if ($step_rate > 1000000000) {
         return 'Шаг ставки не должен превышать 1 000 000 000';
     }
 
-    if ($step_rate < 0) {
-        return 'Шаг ставки не должен быть отрицательным';
+    if ($step_rate <= 0) {
+        return 'Шаг ставки должен быть больше ноля';
     }
     return null;
 }
 
+/**
+ * Функция проверяет валидность даты
+ * @param $end_time string дата
+ *
+ * @return string|null
+ */
 
+function validate_lot_end_time($end_time) {
+    if (empty($end_time)) {
+        return 'Заполните дату окончания лота';
+    }
 
+    $result = false;
+    $regexp = '/(\d{4})\-(\d{2})\-(\d{2})/m';
+
+    if (preg_match($regexp, $end_time, $parts) && count($parts) == 4) {
+        $result = checkdate($parts[2], $parts[3], $parts[1]);
+    }
+
+    if (!$result) {
+        return 'Неверная дата';
+    }
+
+    if (strtotime($parts[0]) < time()) {
+        return 'Дата должна быть больше текущей';
+    }
+    return null;
+}
 
 /**
  * Функция проверяет валидность файла, файл должен быть изображением.
@@ -145,23 +189,4 @@ function validate_file($img_name) {
     return $errors;
 }
 
-/**
- * Проверяет, что переданная дата соответствует формату ДД.ММ.ГГГГ
- * @param $date string дата
- *
- * @return string
- */
-//function check_date_format($date) {
-//    return DateTime::createFromFormat('Y-m-d', $date) !== false;
-//}
-//
-function validate_lot_end_time($end_time) {
-    if (empty($end_time)) {
-        return 'Заполните дату окончания лота';
-    }
-//
-//    if (!check_date_format($end_time)) {
-//        return 'Неверный формат даты';
-//    }
-}
 

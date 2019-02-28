@@ -20,7 +20,6 @@ function include_template($name, $data) {
     require $name;
 
     $result = ob_get_clean();
-
     return $result;
 }
 
@@ -51,7 +50,6 @@ function time_to_end ($str_time) {
 
     $hours = sprintf("%'.02d", floor($secs_to_end / 3600));
     $minutes = sprintf("%'.02d", floor(($secs_to_end % 3600) / 60));
-
     return $hours.":".$minutes;
 }
 
@@ -67,6 +65,5 @@ function add_file ($img_name) {
     $filename = uniqid() . '.' . $file_type;
     move_uploaded_file($img_name['tmp_name'], 'img/' . $filename);
     $data = 'img/' . $filename;
-
     return $data;
 }
