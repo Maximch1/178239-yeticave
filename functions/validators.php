@@ -122,7 +122,7 @@ function validate_lot_step_rate($step_rate) {
         return 'Значение должно быть числом';
     }
 
-    if (!is_int($step_rate)) {
+    if (!ctype_digit($step_rate)) {
         return 'Введите целое число';
     }
 
