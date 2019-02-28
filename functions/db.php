@@ -14,7 +14,6 @@ function db_connect ($config) {
     }
 
     mysqli_set_charset($link, "utf8");
-
     return $link;
 }
 
@@ -30,7 +29,6 @@ function get_categories($link) {
     $sql = "SELECT * FROM categories";
     $result = mysqli_query($link, $sql);
     $category = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     return $category;
 }
 
@@ -49,7 +47,6 @@ function get_lots($link) {
              WHERE l.winner_id IS NULL";
     $result = mysqli_query($link, $sql);
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
     return $lots;
 }
 
@@ -74,10 +71,8 @@ function get_lot($link, $lot_id) {
     }
 
     if (!isset($lots[0])) {
-
         return null;
     }
-
     return $lots[0];
 }
 
@@ -121,7 +116,6 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
         $func = 'mysqli_stmt_bind_param';
         $func(...$values);
     }
-
     return $stmt;
 }
 
@@ -140,9 +134,7 @@ function insert_lot ($link, $lots) {
     $lot_id = mysqli_insert_id($link);
 
     if (!$lot_id) {
-
         return null;
     }
-
     return $lot_id;
 }
