@@ -67,8 +67,8 @@ function validate_lot_price($price) {
         return 'Значение должно быть числом';
     }
 
-    if ($price > 1000000000) {
-        return 'Сумма не должно превышать 1 000 000 000';
+    if ($price > 10000000) {
+        return 'Сумма не должно превышать 10&nbsp;000&nbsp;000';
     }
 
     if ($price < 0) {
@@ -88,8 +88,8 @@ function validate_lot_description($description) {
         return 'Напишите описание лота';
     }
 
-    if (mb_strlen($description) > 65535) {
-        return 'Описание лота не должно превышать 65535 символов';
+    if (mb_strlen($description) > 2000) {
+        return 'Описание лота не должно превышать 2000 символов';
     }
     return null;
 }
@@ -126,8 +126,8 @@ function validate_lot_step_rate($step_rate) {
         return 'Введите целое число';
     }
 
-    if ($step_rate > 1000000000) {
-        return 'Шаг ставки не должен превышать 1 000 000 000';
+    if ($step_rate > 10000000) {
+        return 'Шаг ставки не должен превышать 10&nbsp;000&nbsp;000';
     }
 
     if ($step_rate <= 0) {
@@ -159,7 +159,7 @@ function validate_lot_end_time($end_time) {
         return 'Неверная дата';
     }
 
-    if (strtotime($parts[0]) < time()) {
+    if (strtotime($end_time) < time()) {
         return 'Дата должна быть больше текущей';
     }
     return null;
