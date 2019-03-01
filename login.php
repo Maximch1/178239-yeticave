@@ -6,7 +6,6 @@ $title = 'Регистрация нового аккаунта';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
-require_once ('functions/validators.php');
 require_once ('functions/validators_login.php');
 $config = require 'config.php';
 
@@ -24,13 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //    }
 //
     $user_data = $_POST['login'];
-    $user_session = $_SESSION['user'];
-//
-//    $errors = validate_user($link, $user_data);
-//
-//    if (!count($errors)) {
-//        $insert_user = insert_user($link, $user_data);
-//    }
+    $user_data_base = check_isset_email($link, $user_data['email']);
+
+    $errors = validate_login($user_data, $user_data_base);
+
+    if (!count($errors)) {
+        $_SESSION['user'] = $user_data_base;
+        header("Location: /");
+        exit();
+    }
 //
 //    if ($insert_user) {
 //        header("Location: /");

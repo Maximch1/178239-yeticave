@@ -7,64 +7,45 @@
  *
  * @return array массив ошибок
  */
-function validate_login ($link, $user_data, $user_session)
-{
+function validate_login ($user_data, $user_data_base) {
     $errors = [];
 //    $base_user_data = check_isset_email($link, $user_data['email']);
 
-    if ($error = validate_user_email($link, $user_data['email'])) {
+    if ($error = validate_user_email($user_data['email'], $user_data_base)) {
         $errors['email'] = $error;
     }
 
-    if ($error = validate_user_password($link, $user_data['email'], $user_data['password'], $user_session)) {
+    if ($error = validate_user_password($user_data['password'], $user_data_base['password'])) {
         $errors['password'] = $error;
     }
     return $errors;
 }
 
 
-/**
- * Функция проверяет валидность email
- * @param $link mysqli Ресурс соединения
- * @param $email string email
- *
- * @return string|null текст ошибки
- */
-function validate_user_email ($link, $email) {
+
+function validate_user_email ($email, $user_data_base) {
     if (empty($email)) {
         return 'Введите email';
-    }
-
-    if (!check_isset_email($link, $email)) {
-        return 'Пользователь не найден';
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return 'Введите верный email';
     }
+
+    if (!$user_data_base) {
+        return 'Пользователь не найден';
+    }
     return null;
 }
 
-/**
- * Функция проверяет валидность пароля
- *
- * @param $link
- * @param $email
- * @param $password string пароль
- *
- * @param $user_session
- *
- * @return array|string|null
- */
-function validate_user_password ($link, $email, $password, $user_session) {
+
+function validate_user_password ($password, $password_base) {
     if (empty($password)) {
         return 'Введите пароль';
     }
 
-    $user_data = check_isset_email($link, $email);
-    if (password_verify($password, $user_data['password'])) {
-        $user_session = $user_data;
-        return $user_session;
+    if (!password_verify($password, $password_base)) {
+        return 'Вы ввели неверный пароль';
     }
     return null;
 }
