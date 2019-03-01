@@ -7,7 +7,6 @@ $title = 'Главная';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
-require_once ('functions/validators.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
