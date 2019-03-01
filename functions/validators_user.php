@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Функция проводит проверку на ошибки формы добавления пользователя
+ * @param $link mysqli Ресурс соединения
+ * @param $user_data array массив в _POST, который надо проверить
+ *
+ * @return array массив ошибок
+ */
 function validate_user ($link, $user_data) {
     $errors   = [];
 
@@ -21,6 +28,13 @@ function validate_user ($link, $user_data) {
     return $errors;
 }
 
+/**
+ * Функция проверяет валидность email
+ * @param $link mysqli Ресурс соединения
+ * @param $email string email
+ *
+ * @return string|null текст ошибки
+ */
 function validate_user_email ($link, $email) {
     if (empty($email)) {
         return 'Введите email';
@@ -36,6 +50,12 @@ function validate_user_email ($link, $email) {
     return null;
 }
 
+/**
+ * Функция проверяет валидность пароля
+ * @param $password string пароль
+ *
+ * @return string|null текст ошибки
+ */
 function validate_user_password ($password) {
     if (empty($password)) {
         return 'Введите пароль';
@@ -43,12 +63,25 @@ function validate_user_password ($password) {
     return null;
 }
 
+/**
+ * Функция проверяет валидность имени пользователя
+ * @param $name string имя пользователя
+ *
+ * @return string|null текст ошибки
+ */
 function validate_user_name ($name) {
     if (empty($name)) {
         return 'Введите имя';
     }
     return null;
 }
+
+/**
+ * Функция проверяет валидность контактных данных
+ * @param $contacts string контактные данные
+ *
+ * @return string|null текст ошибки
+ */
 function validate_user_contacts ($contacts) {
     if (empty($contacts)) {
         return 'Напишите как с вами связаться';

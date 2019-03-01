@@ -7,42 +7,41 @@ $title = 'Регистрация нового аккаунта';
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators.php');
-require_once ('functions/validators_user.php');
+require_once ('functions/validators_login.php');
 $config = require 'config.php';
+
+session_start();
 
 $link = db_connect($config['db']);
 
 $categories = get_categories($link);
 $errors = [];
-$signup = [];
+$login = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['signup'])) {
-        die('Некорректные данные для регистрации');
-    }
-
-    $user_data = $_POST['signup'];
-    $user_img =  $_FILES['avatar'];
-
-    $errors = validate_user($link, $user_data);
-    $file_errors = validate_file($user_img['tmp_name']);
-    $errors = array_merge($errors, $file_errors);
-
-    if (!count($errors)) {
-        $user_data['avatar'] = add_file($user_img);
-        $insert_user = insert_user($link, $user_data);
-    }
-
-    if ($insert_user) {
-        header("Location: login.php");
-        exit();
-    }
+//    if (!isset($_POST['logim'])) {
+//        die('Некорректные данные для регистрации');
+//    }
+//
+    $user_data = $_POST['login'];
+    $user_session = $_SESSION['user'];
+//
+//    $errors = validate_user($link, $user_data);
+//
+//    if (!count($errors)) {
+//        $insert_user = insert_user($link, $user_data);
+//    }
+//
+//    if ($insert_user) {
+//        header("Location: /");
+//        exit();
+//    }
 }
 
-$content = include_template('sign-up.php', [
+$content = include_template('login.php', [
     'categories' => $categories,
     'errors'     => $errors,
-    'signup'     => $user_data
+    'login'     => $user_data
 ]);
 
 $layout = include_template('layout.php', [
