@@ -55,7 +55,7 @@ function time_to_end ($str_time) {
 
 
 /**
- * Функция загружает файл в папку img/ и выводит имя файла в массив _POST
+ * Функция загружает файл в папку uploads/ и выводит имя файла в массив _POST
  * @param $img_name
  *
  * @return mixed
@@ -63,7 +63,7 @@ function time_to_end ($str_time) {
 function add_file ($img_name) {
     $file_type = pathinfo($img_name['name'], PATHINFO_EXTENSION);
     $filename = uniqid() . '.' . $file_type;
-    move_uploaded_file($img_name['tmp_name'], 'img/' . $filename);
-    $data = 'img/' . $filename;
+    move_uploaded_file($img_name['tmp_name'], 'uploads/' . $filename);
+    $data = 'uploads/' . $filename;
     return $data;
 }

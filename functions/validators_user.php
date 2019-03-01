@@ -3,7 +3,7 @@
 /**
  * Функция проводит проверку на ошибки формы добавления пользователя
  * @param $link mysqli Ресурс соединения
- * @param $user_data array массив в _POST, который надо проверить
+ * @param $user_data array массив данных из формы регистрации
  *
  * @return array массив ошибок
  */
@@ -73,6 +73,10 @@ function validate_user_name ($name) {
     if (empty($name)) {
         return 'Введите имя';
     }
+
+    if (mb_strlen($name) > 50) {
+        return 'Имя не должно превышать 50 символов';
+    }
     return null;
 }
 
@@ -85,6 +89,10 @@ function validate_user_name ($name) {
 function validate_user_contacts ($contacts) {
     if (empty($contacts)) {
         return 'Напишите как с вами связаться';
+    }
+
+    if (mb_strlen($contacts) > 500) {
+        return 'Имя не должно превышать 500 символов';
     }
     return null;
 }

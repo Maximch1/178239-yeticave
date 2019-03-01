@@ -9,16 +9,14 @@
  */
 function validate_file($img_name) {
     $errors = [];
-    if ($img_name != null) {
+    if (!empty($img_name))  {
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $img_name);
 
         if (mb_strpos ($file_type, 'image') === false) {
-            $errors['img'] = 'Загрузите картинку в формате JPEG';
-
+            $errors['img'] = 'Загрузите картинку';
             return $errors;
         }
-
         return $errors;
     }
     $errors['img'] = 'Вы не загрузили файл';
