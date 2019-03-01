@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Функция проводит проверку на ошибки формы лота
  * @param $lot_data array массив в _POST, который надо проверить
@@ -9,6 +8,7 @@
  */
 function validate_lot($lot_data) {
     $errors   = [];
+
     if ($error = validate_lot_title($lot_data['title'])) {
         $errors['title'] = $error;
     }
@@ -174,13 +174,12 @@ function validate_lot_end_time($end_time) {
  */
 function validate_file($img_name) {
     $errors = [];
-    if ($img_name['tmp_name'] != null) {
+    if (!empty($img_name))  {
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
-        $file_type = finfo_file($finfo, $img_name['tmp_name']);
+        $file_type = finfo_file($finfo, $img_name);
 
         if (mb_strpos ($file_type, 'image') === false) {
-            $errors['img'] = 'Файл должен быть картинкой';
-
+            $errors['img'] = 'Загрузите картинку';
             return $errors;
         }
         return $errors;
@@ -188,5 +187,3 @@ function validate_file($img_name) {
     $errors['img'] = 'Вы не загрузили файл';
     return $errors;
 }
-
-

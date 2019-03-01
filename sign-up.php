@@ -2,50 +2,46 @@
 date_default_timezone_set("Europe/Moscow");
 $is_auth    = rand(0, 1);
 $user_name  = 'Maxim';
-$title = 'Добавление лота';
+$title = 'Регистрация нового аккаунта';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
-require_once ('functions/validators_lot.php');
+require_once ('functions/validators_user.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
 $categories = get_categories($link);
 $errors = [];
-$lot = [];
+$signup = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['lot'])) {
-        die('Некорректные данные для добавления лота');
+    if (!isset($_POST['signup'])) {
+        die('Некорректные данные для регистрации');
     }
 
-    if (!isset($_FILES['lot_img'])) {
-        die('Некорректный файл');
-    }
+    $user_data = $_POST['signup'];
+    $user_img =  $_FILES['avatar'];
 
-    $lot_data = $_POST['lot'];
-    $lot_img =  $_FILES['lot_img'];
-
-    $errors = validate_lot($lot_data);
-    $file_errors = validate_file($lot_img['tmp_name']);
+    $errors = validate_user($link, $user_data);
+    $file_errors = validate_file($user_img['tmp_name']);
     $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {
-        $lot_data['img'] = add_file($lot_img);
-        $lot_id = insert_lot($link, $lot_data);
+        $user_data['avatar'] = add_file($user_img);
+        $insert_user = insert_user($link, $user_data);
     }
 
-    if ($lot_id) {
-        header("Location: lot.php?id=" . $lot_id);
+    if ($insert_user) {
+        header("Location: enter.php");
         exit();
     }
 }
 
-$content = include_template('add.php', [
+$content = include_template('sign-up.php', [
     'categories' => $categories,
     'errors'     => $errors,
-    'lot'        => $lot_data
+    'signup'     => $user_data
 ]);
 
 $layout = include_template('layout.php', [

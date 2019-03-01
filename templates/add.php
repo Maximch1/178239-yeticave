@@ -15,12 +15,12 @@
         <div class="form__container-two">
             <div class="form__item <?= isset($errors['title']) ? "form__item--invalid" : null; ?>"> <!-- form__item--invalid -->
                 <label for="lot-name">Наименование</label>
-                <input id="lot-name" type="text" name="lot[title]" placeholder="Введите наименование лота" value="<?= isset($lot['title']) ? $lot['title'] : null; ?>"> <!-- required -->
+                <input id="lot-name" type="text" name="lot[title]" placeholder="Введите наименование лота" value="<?= isset($lot['title']) ? $lot['title'] : null; ?>" required> <!-- required -->
                 <span class="form__error"><?= isset($errors['title']) ? $errors['title'] : null; ?></span>
             </div>
             <div class="form__item <?= isset($errors['category_id']) ? "form__item--invalid" : null; ?>">
                 <label for="category">Категория</label>
-                <select id="category" name="lot[category_id]" > <!-- required -->
+                <select id="category" name="lot[category_id]" required> <!-- required -->
                     <option value="">Выберите категорию</option>
                     <?php foreach ($categories as $category): ?>
                         <option value="<?= $category['id']; ?>" <?= ($lot['category_id'] == $category['id']) ? " selected" : null; ?> ><?= $category['title']; ?></option>
@@ -31,7 +31,7 @@
         </div>
         <div class="form__item form__item--wide <?= isset($errors['description']) ? "form__item--invalid" : null; ?>">
             <label for="message">Описание</label>
-            <textarea id="message" name="lot[description]" placeholder="Напишите описание лота"><?= isset($lot['description']) ? $lot['description'] : null; ?></textarea> <!-- required -->
+            <textarea id="message" name="lot[description]" placeholder="Напишите описание лота" required><?= isset($lot['description']) ? $lot['description'] : null; ?></textarea> <!-- required -->
             <span class="form__error"><?= isset($errors['description']) ? $errors['description'] : null; ?></span>
         </div>
         <div class="form__item form__item--file <?= isset($errors['img']) ? "form__item--invalid" : null; ?>"> <!-- form__item--uploaded -->
@@ -53,17 +53,17 @@
         <div class="form__container-three">
             <div class="form__item form__item--small <?= isset($errors['price']) ? "form__item--invalid" : null; ?>">
                 <label for="lot-rate">Начальная цена</label>
-                <input id="lot-rate" type="number" name="lot[price]" placeholder="0" value="<?= isset($lot['price']) ? $lot['price'] : null; ?>" > <!-- required -->
+                <input id="lot-rate" type="number" name="lot[price]" placeholder="0" value="<?= isset($lot['price']) ? $lot['price'] : null; ?>" required> <!-- required -->
                 <span class="form__error"><?= isset($errors['price']) ? $errors['price'] : null; ?></span>
             </div>
             <div class="form__item form__item--small <?= isset($errors['step_rate']) ? "form__item--invalid" : null; ?>">
                 <label for="lot-step">Шаг ставки</label>
-                <input id="lot-step" type="number" name="lot[step_rate]" placeholder="0" value="<?= isset($lot['price']) ? $lot['step_rate'] : null; ?>" > <!-- required -->
+                <input id="lot-step" type="number" name="lot[step_rate]" placeholder="0" value="<?= isset($lot['price']) ? $lot['step_rate'] : null; ?>" required> <!-- required -->
                 <span class="form__error"><?= isset($errors['step_rate']) ? $errors['step_rate'] : null; ?></span>
             </div>
             <div class="form__item <?= isset($errors['end_time']) ? "form__item--invalid" : null; ?>">
                 <label for="lot-date">Дата окончания торгов</label>
-                <input class="form__input-date" id="lot-date" type="date" name="lot[end_time]" value="<?= isset($lot['price']) ? $lot['end_time'] : null; ?>" > <!-- required -->
+                <input class="form__input-date" id="lot-date" type="date" name="lot[end_time]" value="<?= isset($lot['price']) ? $lot['end_time'] : null; ?>" required> <!-- required -->
                 <span class="form__error"><?= isset($errors['end_time']) ? $errors['end_time'] : null; ?></span>
             </div>
         </div>
