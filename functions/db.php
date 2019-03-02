@@ -160,7 +160,7 @@ function check_isset_email ($link, $email) {
  * @param $link mysqli Ресурс соединения
  * @param $user array массив в _POST
  *
- * @return int|null
+ * @return int|null возвращает все данные пользователя с БД
  */
 function insert_user ($link, $user) {
     $password = password_hash($user['password'], PASSWORD_DEFAULT);
