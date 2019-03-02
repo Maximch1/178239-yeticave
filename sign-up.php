@@ -1,8 +1,7 @@
 <?php
 date_default_timezone_set("Europe/Moscow");
-$is_auth    = rand(0, 1);
-$user_name  = 'Maxim';
 $title = 'Регистрация нового аккаунта';
+session_start();
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
@@ -24,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user_img =  $_FILES['avatar'];
 
     $errors = validate_user($link, $user_data);
-    $file_errors = validate_file($user_img['tmp_name']);
+    $file_errors = validate_user_file_avatar($user_img['tmp_name']);
     $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {
@@ -46,8 +45,6 @@ $content = include_template('sign-up.php', [
 
 $layout = include_template('layout.php', [
     'content'    => $content,
-    'is_auth'    => $is_auth,
-    'user_name'  => $user_name,
     'title'      => $title,
     'categories' => $categories
 ]);

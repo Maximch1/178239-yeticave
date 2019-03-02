@@ -1,8 +1,7 @@
 <?php
 date_default_timezone_set("Europe/Moscow");
-//$is_auth    = rand(0, 1);
-//$user_name  = 'Maxim';
 $title = 'Главная';
+session_start();
 
 
 require_once ('functions/template.php');
@@ -21,8 +20,6 @@ $content = include_template('index.php', [
 
 $layout = include_template('layout.php', [
     'content' => $content,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'title'      => $title,
     'categories' => $categories
 ]);

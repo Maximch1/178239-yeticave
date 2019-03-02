@@ -104,7 +104,7 @@ function validate_user_contacts ($contacts) {
  *
  * @return array
  */
-function validate_file($img_name) {
+function validate_user_file_avatar($img_name) {
     $errors = [];
     if (!empty($img_name))  {
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);

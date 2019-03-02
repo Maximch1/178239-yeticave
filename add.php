@@ -1,8 +1,11 @@
 <?php
 date_default_timezone_set("Europe/Moscow");
-$is_auth    = rand(0, 1);
-$user_name  = 'Maxim';
 $title = 'Добавление лота';
+session_start();
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    exit();
+}
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
@@ -28,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $lot_img =  $_FILES['lot_img'];
 
     $errors = validate_lot($lot_data);
-    $file_errors = validate_file($lot_img['tmp_name']);
+    $file_errors = validate_lot_file_image($lot_img['tmp_name']);
     $errors = array_merge($errors, $file_errors);
 
     if (!count($errors)) {
@@ -50,8 +53,6 @@ $content = include_template('add.php', [
 
 $layout = include_template('layout.php', [
     'content'    => $content,
-    'is_auth'    => $is_auth,
-    'user_name'  => $user_name,
     'title'      => $title,
     'categories' => $categories
 ]);

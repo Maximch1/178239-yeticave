@@ -1,7 +1,4 @@
 <?php
-var_dump($errors);
-var_dump($login);
-
 ?>
 
 <main>

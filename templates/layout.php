@@ -6,7 +6,6 @@
  * @var string $user_name имя пользователя
  * @var string $is_auth определяет пользователь или нет
  */
-
 ?>
 
 <!DOCTYPE html>
@@ -30,12 +29,14 @@
                 <input type="search" name="search" placeholder="Поиск лота">
                 <input class="main-header__search-btn" type="submit" name="find" value="Найти">
             </form>
-            <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
-
+            <?php if ($_SESSION['user']): ?>
+                <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
+            <?php endif; ?>
             <nav class="user-menu">
-                <?php if ($is_auth): ?>
+                <?php if ($_SESSION['user']): ?>
                     <div class="user-menu__logged">
-                        <p><?= $user_name; ?></p>
+                        <p><?= strip_tags($_SESSION['user']['name']) ?></p>
+                        <a href="logout.php">Выйти</a>
                     </div>
                 <?php else: ?>
                     <ul class="user-menu__list">

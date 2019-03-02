@@ -172,7 +172,7 @@ function validate_lot_end_time($end_time) {
  *
  * @return array
  */
-function validate_file($img_name) {
+function validate_lot_file_image($img_name) {
     $errors = [];
     if (!empty($img_name))  {
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
