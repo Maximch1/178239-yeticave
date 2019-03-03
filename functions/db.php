@@ -140,26 +140,53 @@ function insert_lot ($link, $lots) {
 }
 
 /**
- * Функция производит поиск в базе users по полю email, если находит, то возвращает количество найденных записей.
+ * Функция производит поиск в базе users по полю email, если находит, то возвращает данные пользователя.
  * @param $link mysqli Ресурс соединения
  * @param $email string email
  *
- * @return int количество email
+ * @return array
  */
 function check_isset_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
-    $sql   = "SELECT id FROM users WHERE email = '$email'";
+    $sql   = "SELECT * FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
 
-    return mysqli_num_rows($res);
+    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
+    return $user_data;
 }
+
+
+function get_user_by_email ($link, $email) {
+    $email = mysqli_real_escape_string($link, $email);
+    $sql   = "SELECT * FROM users WHERE email = '$email'";
+    $res   = mysqli_query($link, $sql);
+
+    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
+    return $user_data;
+}
+
+
+function get_user_by_id ($link, $id) {
+    $sql   = 'SELECT * FROM users WHERE id = ' . (int)$id;
+    $res   = mysqli_query($link, $sql);
+
+    $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
+
+    if (!$user) {
+        return null;
+    }
+    return $user;
+}
+
+
+
 
 /**
  * Функция добавляет юзера в базу SQL, возвращает id добавленного юзера
  * @param $link mysqli Ресурс соединения
  * @param $user array массив в _POST
  *
- * @return int|null
+ * @return int|null возвращает все данные пользователя с БД
  */
 function insert_user ($link, $user) {
     $password = password_hash($user['password'], PASSWORD_DEFAULT);
@@ -174,3 +201,5 @@ function insert_user ($link, $user) {
     }
     return $user_id;
 }
+
+

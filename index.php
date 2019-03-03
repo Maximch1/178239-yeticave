@@ -1,18 +1,24 @@
 <?php
+session_start();
 date_default_timezone_set("Europe/Moscow");
-$is_auth    = rand(0, 1);
-$user_name  = 'Maxim';
 $title = 'Главная';
 
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
+require_once ('functions/user.php');
+
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
 $categories = get_categories($link);
 $lots = get_lots($link);
+$user = null;
+
+if (is_auth()) {
+    $user = get_user_by_id($link, $_SESSION['user_id']);
+}
 
 $content = include_template('index.php', [
     'categories' => $categories,
@@ -21,10 +27,9 @@ $content = include_template('index.php', [
 
 $layout = include_template('layout.php', [
     'content' => $content,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'title'      => $title,
-    'categories' => $categories
+    'categories' => $categories,
+    'user' => $user
 ]);
 
 print $layout;
