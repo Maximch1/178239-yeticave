@@ -22,7 +22,7 @@
             <p class="lot-item__description"><?= $lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
-            <?php if (isset($_SESSION['user'])):?>
+            <?php if (is_auth()):?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
                     <?= time_to_end($lot['end_time']); ?>

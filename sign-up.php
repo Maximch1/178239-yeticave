@@ -1,14 +1,23 @@
 <?php
+session_start();
 date_default_timezone_set("Europe/Moscow");
 $title = 'Регистрация нового аккаунта';
-session_start();
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators_user.php');
+require_once ('functions/user.php');
+
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
+
+$user = null;
+
+if (is_auth()) {
+    header("Location: /");
+    exit();
+}
 
 $categories = get_categories($link);
 $errors = [];

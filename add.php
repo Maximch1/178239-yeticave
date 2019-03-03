@@ -1,18 +1,20 @@
 <?php
+session_start();
 date_default_timezone_set("Europe/Moscow");
 $title = 'Добавление лота';
-session_start();
-if (!isset($_SESSION['user'])) {
-    http_response_code(403);
-    exit();
-}
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators_lot.php');
+require_once ('functions/user.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
+
+if (!is_auth()) {
+    http_response_code(403);
+    exit();
+}
 
 $categories = get_categories($link);
 $errors = [];

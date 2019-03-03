@@ -151,9 +151,35 @@ function check_isset_email ($link, $email) {
     $sql   = "SELECT * FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
 
-    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;;
+    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
     return $user_data;
 }
+
+
+function get_user_by_email ($link, $email) {
+    $email = mysqli_real_escape_string($link, $email);
+    $sql   = "SELECT * FROM users WHERE email = '$email'";
+    $res   = mysqli_query($link, $sql);
+
+    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
+    return $user_data;
+}
+
+
+function get_user_by_id ($link, $id) {
+    $sql   = 'SELECT * FROM users WHERE id = ' . (int)$id;
+    $res   = mysqli_query($link, $sql);
+
+    $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
+
+    if (!$user) {
+        return null;
+    }
+    return $user;
+}
+
+
+
 
 /**
  * Функция добавляет юзера в базу SQL, возвращает id добавленного юзера

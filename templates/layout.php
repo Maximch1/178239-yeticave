@@ -29,13 +29,13 @@
                 <input type="search" name="search" placeholder="Поиск лота">
                 <input class="main-header__search-btn" type="submit" name="find" value="Найти">
             </form>
-            <?php if ($_SESSION['user']): ?>
+            <?php if ($user): ?>
                 <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
             <?php endif; ?>
             <nav class="user-menu">
-                <?php if ($_SESSION['user']): ?>
+                <?php if ($user): ?>
                     <div class="user-menu__logged">
-                        <p><?= strip_tags($_SESSION['user']['name']) ?></p>
+                        <p><?= strip_tags($user['name']) ?></p>
                         <a href="logout.php">Выйти</a>
                     </div>
                 <?php else: ?>

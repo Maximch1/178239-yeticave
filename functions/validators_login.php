@@ -12,11 +12,11 @@
 function validate_login ($user_data, $user_data_base) {
     $errors = [];
 
-    if ($error = validate_user_email($user_data['email'], $user_data_base['email'])) {
+    if ($error = validate_user_login_email($user_data['email'], $user_data_base['email'])) {
         $errors['email'] = $error;
     }
 
-    if ($error = validate_user_password($user_data['password'], $user_data_base['password'])) {
+    if ($error = validate_user_login_password($user_data['password'], $user_data_base['password'])) {
         $errors['password'] = $error;
     }
     return $errors;
@@ -30,7 +30,7 @@ function validate_login ($user_data, $user_data_base) {
  *
  * @return string|null выводит ошибку либо null
  */
-function validate_user_email ($email, $user_data_base) {
+function validate_user_login_email ($email, $user_data_base) {
     if (empty($email)) {
         return 'Введите email';
     }
@@ -53,7 +53,7 @@ function validate_user_email ($email, $user_data_base) {
  *
  * @return string|null выводит ошибку либо null
  */
-function validate_user_password ($password, $password_base) {
+function validate_user_login_password ($password, $password_base) {
     if (empty($password)) {
         return 'Введите пароль';
     }
