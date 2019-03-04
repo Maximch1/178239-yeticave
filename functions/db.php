@@ -127,9 +127,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  * @return int|null
  */
 function insert_lot ($link, $lots) {
-    $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+    $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
+    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate'], $_SESSION['user_id']]);
     mysqli_stmt_execute($stmt);
     $lot_id = mysqli_insert_id($link);
 
@@ -141,18 +141,17 @@ function insert_lot ($link, $lots) {
 
 /**
  * Функция производит поиск в базе users по полю email, если находит, то возвращает данные пользователя.
+ *
  * @param $link mysqli Ресурс соединения
  * @param $email string email
  *
- * @return array
+ * @return int
  */
 function check_isset_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
     $sql   = "SELECT * FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
-
-    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
-    return $user_data;
+    return mysqli_num_rows($res);
 }
 
 
@@ -203,3 +202,26 @@ function insert_user ($link, $user) {
 }
 
 
+
+function get_bets_by_lot_id ($link, $id) {
+    $sql = 'SELECT b.id, u.name, b.rate, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_create_time FROM bets b JOIN users u ON b.user_id = u.id WHERE b.lot_id = ' . (int)$id . ' ORDER BY create_time DESC LIMIT 10;';
+    $res = mysqli_query($link, $sql);
+    $bet = $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : null;
+    return $bet;
+}
+
+
+
+function insert_bet ($link, $rate, $user_id, $lot_id) {
+    $sql = 'INSERT INTO bets (rate, user_id, lot_id) VALUES (?, ?, ?)';
+
+    $stmt = db_get_prepare_stmt($link, $sql, [$rate, $user_id, $lot_id]);
+    mysqli_stmt_execute($stmt);
+    $user_id = mysqli_insert_id($link);
+
+    if (!$user_id) {
+        return null;
+    }
+    return $user_id;
+
+}
