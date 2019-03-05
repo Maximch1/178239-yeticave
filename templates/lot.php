@@ -22,7 +22,7 @@
             <p class="lot-item__description"><?= $lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
-            <?php if (is_auth()):?>
+            <?php if (is_auth() & (time_to_end($lot['end_time']) > 0)):?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
                     <?= time_to_end($lot['end_time']); ?>
@@ -36,11 +36,11 @@
                         Мин. ставка <span><?= format_price(htmlspecialchars($lot['max_rate'] + $lot['step_rate'])); ?></span>
                     </div>
                 </div>
-                <form class="lot-item__form" action="lot.php" method="post">
-                    <p class="lot-item__form-item form__item form__item--invalid">
+                <form class="lot-item__form" action="lot.php?id=<?= $lot['id']; ?>" method="post">
+                    <p class="lot-item__form-item form__item <?= !empty($errors) ? "form__item--invalid" : null; ?>">
                         <label for="cost">Ваша ставка</label>
                         <input id="cost" type="text" name="rate" placeholder="<?= htmlspecialchars($lot['max_rate'] + $lot['step_rate']); ?>">
-                        <span class="form__error">Введите наименование лота</span>
+                        <span class="form__error"><?=$errors;?></span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>

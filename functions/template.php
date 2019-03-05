@@ -102,15 +102,23 @@ const HOURS = ['часов', 'час', 'часа'];
 const MINUTES = ['минут', 'минута', 'минуты'];
 
 
-
-
-function get_time_format_bet(string $str_time) {
+/**
+ * Функция форматирует поле с датой и временем в истории ставок, исходя из давности сделанной ставки.
+ * @param $str_time string дата + время с БД
+ *
+ * @return string|null
+ */
+function get_time_format_bet($str_time) {
     $secs_to_end = time() - strtotime($str_time);
     $hours   = sprintf("%'.02d", floor($secs_to_end / 3600));
     $minutes = sprintf("%'.02d", floor(($secs_to_end % 3600) / 60));
 
     if ($hours < 24 && $hours > 0) {
         return $hours . ' ' . get_correct_word($hours, HOURS) . ' ' .  $minutes . ' ' . get_correct_word($minutes, MINUTES) . ' назад';
+    }
+
+    if ($hours <= 0 AND $minutes <= 1) {
+        return 'минуту назад';
     }
 
     if ($hours <= 0) {

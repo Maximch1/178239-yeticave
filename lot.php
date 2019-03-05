@@ -6,6 +6,7 @@ $title = 'Лот';
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/validators_lot.php');
+require_once ('functions/validators_bet.php');
 require_once ('functions/user.php');
 $config = require 'config.php';
 
@@ -33,25 +34,21 @@ $errors = [];
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//    if (!isset($_POST['lot'])) {
-//        die('Некорректные данные для добавления лота');
-//    }
-//
-//    if (!isset($_FILES['lot_img'])) {
-//        die('Некорректный файл');
-//    }
+    if (!isset($_POST['rate'])) {
+        die('Некорректные данные для добавления ставки');
+    }
 
     $bet_rate = $_POST['rate'];
+    $errors = validate_bet($user['id'], $bet_rate, $lot, $bets);
 
-//    $errors = validate_lot($lot_data);
-    var_dump($lot_id);
     if (!count($errors)) {
-        $bet_rate_insert = insert_bet($link, $bet_rate, $user, $lot_id);
+        $bet_rate_id = insert_bet($link, $bet_rate, $user['id'], $lot_id);
+    }
+    if ($bet_rate_id) {
         header("Location: lot.php?id=" . $lot_id);
         exit();
     }
 }
-
 
 if (!$lot) {
     $content = include_template('404.php', [
@@ -64,6 +61,7 @@ else {
         'lot'        => $lot,
         'user'       => $user,
         'bets'       => $bets,
+        'errors'     => $errors,
     ]);
 }
 
