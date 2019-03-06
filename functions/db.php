@@ -279,17 +279,13 @@ function get_search_lots($link, $search, $page_items, $offset) {
  * Функция выводит массив с номерами всех страниц
  * @param $link mysqli Ресурс соединения
  * @param $search string значение поиска
- * @param $page_items int количество лотов на странице
  *
  * @return array
  */
-function get_search_count_lot ($link, $search, $page_items) {
+function get_search_count_lot ($link, $search) {
     $search = mysqli_real_escape_string($link, $search);
     $result = mysqli_query($link, "SELECT COUNT(*) as cnt FROM lots WHERE MATCH(title, description) AGAINST ('$search' IN BOOLEAN MODE) AND winner_id IS NULL;");
     $items_count = mysqli_fetch_assoc($result)['cnt'];
-
-//    $pages_count = ceil($items_count / $page_items);
-//    $pages = range(1, $pages_count);
     return $items_count;
 }
 
