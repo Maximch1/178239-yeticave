@@ -48,3 +48,4 @@ CREATE TABLE bets (
 ALTER TABLE bets ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 ALTER TABLE bets ADD FOREIGN KEY (lot_id) REFERENCES lots(id) ON DELETE CASCADE;
 
+CREATE FULLTEXT INDEX lot_search ON lots(title, description)

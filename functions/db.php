@@ -249,3 +249,50 @@ function insert_bet ($link, $rate, $user_id, $lot_id) {
     }
     return $bet_id;
 }
+
+/**
+ * Функция возвращает список лотов по поисковому запросу
+ * аргумент - соединение с базой.
+ *
+ * @param $link   mysqli Ресурс соединения
+ * @param $search string значение поиска
+ * @param $page_items int количество лотов на странице
+ * @param $offset int количество смещенных лотов
+ *
+ * @return array|null
+ */
+function get_search_lots($link, $search, $page_items, $offset) {
+    $search = mysqli_real_escape_string($link, $search);
+    $sql = 'SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time, l.winner_id
+             FROM lots l
+             JOIN categories c ON c.id = l.category_id
+             WHERE MATCH(l.title, l.description) AGAINST(? IN BOOLEAN MODE) AND l.winner_id IS NULL ORDER BY l.id DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
+    $stmt = db_get_prepare_stmt($link, $sql, [$search]);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $lots;
+}
+
+
+/**
+ * Функция выводит массив с номерами всех страниц
+ * @param $link mysqli Ресурс соединения
+ * @param $search string значение поиска
+ * @param $page_items int количество лотов на странице
+ *
+ * @return array
+ */
+function get_search_count_lot ($link, $search, $page_items) {
+    $search = mysqli_real_escape_string($link, $search);
+    $result = mysqli_query($link, "SELECT COUNT(*) as cnt FROM lots WHERE MATCH(title, description) AGAINST ('$search' IN BOOLEAN MODE) AND winner_id IS NULL;");
+    $items_count = mysqli_fetch_assoc($result)['cnt'];
+
+//    $pages_count = ceil($items_count / $page_items);
+//    $pages = range(1, $pages_count);
+    return $items_count;
+}
+
+function update_lot_winner (){
+
+}
