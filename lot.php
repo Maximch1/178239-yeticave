@@ -44,10 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!count($errors)) {
         $bet_rate_id = insert_bet($link, $bet_rate, $user['id'], $lot_id);
     }
-    if ($bet_rate_id) {
-        header("Location: lot.php?id=" . $lot_id);
-        exit();
-    }
+    $bets = get_bets_by_lot_id($link, $lot_id);
 }
 
 if (!$lot) {

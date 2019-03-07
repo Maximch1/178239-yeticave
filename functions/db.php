@@ -28,6 +28,11 @@ function db_connect ($config) {
 function get_categories($link) {
     $sql = "SELECT * FROM categories";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     $category = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $category;
 }
@@ -46,6 +51,11 @@ function get_lots($link) {
              JOIN categories c ON c.id = l.category_id
              WHERE l.winner_id IS NULL";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $lots;
 }
@@ -64,6 +74,11 @@ function get_lot($link, $lot_id) {
              JOIN bets b ON l.id = b.lot_id
              WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " ORDER BY l.id DESC;";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     if (!isset($lots[0]['max_rate'])) {
@@ -132,7 +147,11 @@ function insert_lot ($link, $lots, $user_id) {
     $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)';
 
     $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate'], $user_id]);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
     $lot_id = mysqli_insert_id($link);
 
     if (!$lot_id) {
@@ -153,6 +172,11 @@ function check_isset_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
     $sql   = "SELECT id FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
+
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     return mysqli_num_rows($res);
 }
 
@@ -168,6 +192,10 @@ function get_user_by_email ($link, $email) {
     $sql   = "SELECT * FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
 
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
     return $user_data;
 }
@@ -182,6 +210,10 @@ function get_user_by_email ($link, $email) {
 function get_user_by_id ($link, $id) {
     $sql   = 'SELECT * FROM users WHERE id = ' . (int)$id;
     $res   = mysqli_query($link, $sql);
+
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
 
     $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 
@@ -203,7 +235,11 @@ function insert_user ($link, $user) {
     $sql = 'INSERT INTO users (email, name, password, contacts, avatar) VALUES (?, ?, ?, ?, ?)';
 
     $stmt = db_get_prepare_stmt($link, $sql, [$user['email'], $user['name'], $password, $user['contacts'], $user['avatar']]);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
     $user_id = mysqli_insert_id($link);
 
     if (!$user_id) {
@@ -223,6 +259,11 @@ function get_bets_by_lot_id ($link, $lot_id) {
     $sql = 'SELECT b.id, b.user_id, u.name, b.rate, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_create_time 
             FROM bets b JOIN users u ON b.user_id = u.id WHERE b.lot_id = ' . (int)$lot_id . ' ORDER BY create_time DESC LIMIT 10;';
     $res = mysqli_query($link, $sql);
+
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+    }
+
     $bet = $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : null;
     return $bet;
 }
@@ -241,7 +282,11 @@ function insert_bet ($link, $rate, $user_id, $lot_id) {
     $sql = 'INSERT INTO bets (rate, user_id, lot_id) VALUES (?, ?, ?)';
 
     $stmt = db_get_prepare_stmt($link, $sql, [$rate, $user_id, $lot_id]);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
     $bet_id = mysqli_insert_id($link);
 
     if (!$bet_id) {
