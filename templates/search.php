@@ -6,15 +6,16 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="all-lots.html"><?= $category['title']; ?></a>
+                    <a href="all-lots.php?category=<?= $category['id']; ?>"><?= $category['title']; ?></a>
                 </li>
             <?php endforeach; ?>
         </ul>
     </nav>
     <div class="container">
         <section class="lots">
-            <h2>Результаты поиска по запросу «<span><?= htmlspecialchars($search); ?></span>»</h2>
-            <ul class="lots__list">
+            <?php if (!$errors):?>
+                <h2>Результаты поиска по запросу «<span><?= htmlspecialchars($search); ?></span>»</h2>
+                <ul class="lots__list">
                 <?php foreach ($lots as $lot): ?>
                     <li class="lots__item lot">
                         <div class="lot__image">
@@ -36,6 +37,9 @@
                     </li>
                 <?php endforeach; ?>
             </ul>
+            <?php else: ?>
+                <h2><?= $errors ?></h2>
+            <?php endif; ?>
         </section>
         <?php if ($pages_count > 1): ?>
             <ul class="pagination-list">
@@ -48,14 +52,6 @@
                 <li class="pagination-item pagination-item-next"><a <?php if ($cur_page != $pages_count): ?>href="search.php?search=<?= $search; ?>&page=<?= $cur_page+1; ?>"<?php endif; ?>>Вперед</a></li>
             </ul>
         <?php endif; ?>
-<!--        <ul class="pagination-list">-->
-<!--            <li class="pagination-item pagination-item-prev"><a>Назад</a></li>-->
-<!--            <li class="pagination-item pagination-item-active"><a>1</a></li>-->
-<!--            <li class="pagination-item"><a href="#">2</a></li>-->
-<!--            <li class="pagination-item"><a href="#">3</a></li>-->
-<!--            <li class="pagination-item"><a href="#">4</a></li>-->
-<!--            <li class="pagination-item pagination-item-next"><a href="#">Вперед</a></li>-->
-<!--        </ul>-->
     </div>
 </main>
 

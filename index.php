@@ -12,6 +12,7 @@ $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
+update_lot_winner ($link);
 $categories = get_categories($link);
 $lots = get_lots($link);
 $user = null;
