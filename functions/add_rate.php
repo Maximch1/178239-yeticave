@@ -21,6 +21,12 @@ const HOURS = ['часов', 'час', 'часа'];
 const MINUTES = ['минут', 'минута', 'минуты'];
 
 
+/**
+ * Функция выводит дату и время в ставках в верном формате
+ * @param string $str_time дата
+ *
+ * @return string|null
+ */
 function get_time_format_bet(string $str_time) {
     $secs_to_end = time() - strtotime($str_time);
     $hours   = sprintf("%'.02d", floor($secs_to_end / 3600));
@@ -42,6 +48,10 @@ function get_time_format_bet(string $str_time) {
 }
 
 
+/**
+ * Функция редиректа на определенный лот
+ * @param $lot_id int ID лота
+ */
 function redirect_lot_id ($lot_id) {
     header("Location: lot.php?id=" . $lot_id);
     exit();

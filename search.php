@@ -1,6 +1,5 @@
 <?php
 session_start();
-date_default_timezone_set("Europe/Moscow");
 $title = 'Поиск';
 
 
@@ -13,6 +12,7 @@ require_once ('functions/validators_pagination.php');
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
+update_lot_winner ($link);
 
 $categories = get_categories($link);
 $user = null;
@@ -45,6 +45,7 @@ $content = include_template('search.php', [
     'pages_count' => $pages_count,
     'cur_page' => $cur_page,
     'errors' => $errors,
+    'link' => $link,
 ]);
 
 $layout = include_template('layout.php', [

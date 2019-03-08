@@ -27,7 +27,7 @@
                             <div class="lot__state">
                                 <div class="lot__rate">
                                     <span class="lot__amount">Стартовая цена</span>
-                                    <span class="lot__cost"><?= format_price(htmlspecialchars($lot['price'])); ?></span>
+                                    <span class="lot__cost"><?= format_price(htmlspecialchars(get_lot($link, $lot['id'])['max_rate'])); ?></span>
                                 </div>
                                 <div class="lot__timer timer">
                                     <?= time_to_end($lot['end_time']); ?>
