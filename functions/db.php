@@ -28,6 +28,11 @@ function db_connect ($config) {
 function get_categories($link) {
     $sql = "SELECT * FROM categories";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
     $category = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $category;
 }
@@ -46,6 +51,11 @@ function get_lots($link) {
              JOIN categories c ON c.id = l.category_id
              WHERE l.winner_id IS NULL";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $lots;
 }
@@ -58,19 +68,24 @@ function get_lots($link) {
  * @return array|null
  */
 function get_lot($link, $lot_id) {
-    $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time, l.description, l.step_rate,  MAX(b.rate) AS max_rate
+    $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time, l.description, l.step_rate,  MAX(b.rate) AS max_rate, l.user_id
              FROM lots l
              JOIN categories c ON c.id = l.category_id
              JOIN bets b ON l.id = b.lot_id
              WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " ORDER BY l.id DESC;";
     $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     if (!isset($lots[0]['max_rate'])) {
         $lots[0]['max_rate'] = $lots[0]['price'];
     }
 
-    if (!isset($lots[0])) {
+    if (!isset($lots[0]['id'])) {
         return null;
     }
     return $lots[0];
@@ -121,16 +136,22 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
 /**
  * Функция добавляет лот в базу SQL, возвращает id добавленного лота
+ *
  * @param $link mysqli Ресурс соединения
  * @param $lots array массив в _POST
+ * @param $user_id int ID юзера
  *
  * @return int|null
  */
-function insert_lot ($link, $lots) {
-    $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, 1)';
+function insert_lot ($link, $lots, $user_id) {
+    $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate']]);
-    mysqli_stmt_execute($stmt);
+    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate'], $user_id]);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
     $lot_id = mysqli_insert_id($link);
 
     if (!$lot_id) {
@@ -140,35 +161,59 @@ function insert_lot ($link, $lots) {
 }
 
 /**
- * Функция производит поиск в базе users по полю email, если находит, то возвращает данные пользователя.
- * @param $link mysqli Ресурс соединения
- * @param $email string email
+ * Функция производит поиск в базе users по полю email, если находит, то возвращает количество найденных записей.
  *
- * @return array
+ * @param $link mysqli Ресурс соединения
+ * @param $email string email юзера
+ *
+ * @return int
  */
 function check_isset_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
-    $sql   = "SELECT * FROM users WHERE email = '$email'";
+    $sql   = "SELECT id FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
 
-    $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
-    return $user_data;
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
+    return mysqli_num_rows($res);
 }
 
-
+/**
+ * Функция производит поиск в базе users по полю email, если находит, то возвращает данные пользователя.
+ * @param $link mysqli Ресурс соединения
+ * @param $email string email юзера
+ *
+ * @return array|null
+ */
 function get_user_by_email ($link, $email) {
     $email = mysqli_real_escape_string($link, $email);
     $sql   = "SELECT * FROM users WHERE email = '$email'";
     $res   = mysqli_query($link, $sql);
 
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
     $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
     return $user_data;
 }
 
-
+/**
+ * Функция производит поиск в базе users по ID, если находит, то возвращает данные пользователя.
+ * @param $link mysqli Ресурс соединения
+ * @param $id int ID юзера
+ *
+ * @return array|null
+ */
 function get_user_by_id ($link, $id) {
     $sql   = 'SELECT * FROM users WHERE id = ' . (int)$id;
     $res   = mysqli_query($link, $sql);
+
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
 
     $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
 
@@ -177,9 +222,6 @@ function get_user_by_id ($link, $id) {
     }
     return $user;
 }
-
-
-
 
 /**
  * Функция добавляет юзера в базу SQL, возвращает id добавленного юзера
@@ -193,7 +235,11 @@ function insert_user ($link, $user) {
     $sql = 'INSERT INTO users (email, name, password, contacts, avatar) VALUES (?, ?, ?, ?, ?)';
 
     $stmt = db_get_prepare_stmt($link, $sql, [$user['email'], $user['name'], $password, $user['contacts'], $user['avatar']]);
-    mysqli_stmt_execute($stmt);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
     $user_id = mysqli_insert_id($link);
 
     if (!$user_id) {
@@ -202,4 +248,49 @@ function insert_user ($link, $user) {
     return $user_id;
 }
 
+/**
+ * Функция производит поиск ставок по ID лота, возвращает данные пользователей и сделанные ими ставки сортируя по дате создания ставки с лимитом в 10 последних записей.
+ * @param $link mysqli Ресурс соединения
+ * @param $lot_id int ID ставки
+ *
+ * @return array|null
+ */
+function get_bets_by_lot_id ($link, $lot_id) {
+    $sql = 'SELECT b.id, b.user_id, u.name, b.rate, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_create_time 
+            FROM bets b JOIN users u ON b.user_id = u.id WHERE b.lot_id = ' . (int)$lot_id . ' ORDER BY create_time DESC LIMIT 10;';
+    $res = mysqli_query($link, $sql);
 
+    if (!$res) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
+    $bet = $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : null;
+    return $bet;
+}
+
+
+/**
+ * Функция добавляет ставку в базу SQL, возвращает id добавленной ставки
+ * @param $link mysqli Ресурс соединения
+ * @param $rate int ставка
+ * @param $user_id int ID юзера
+ * @param $lot_id int ID лота
+ *
+ * @return int|string|null
+ */
+function insert_bet ($link, $rate, $user_id, $lot_id) {
+    $sql = 'INSERT INTO bets (rate, user_id, lot_id) VALUES (?, ?, ?)';
+
+    $stmt = db_get_prepare_stmt($link, $sql, [$rate, $user_id, $lot_id]);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
+    }
+
+    $bet_id = mysqli_insert_id($link);
+
+    if (!$bet_id) {
+        return null;
+    }
+    return $bet_id;
+}

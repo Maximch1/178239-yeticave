@@ -20,7 +20,7 @@
         </div>
         <div class="form__item <?= isset($errors['password']) ? "form__item--invalid" : null; ?>">
             <label for="password">Пароль*</label>
-            <input id="password" type="text" name="signup[password]" placeholder="Введите пароль" value="<?= isset($signup['password']) ? $signup['password'] : null; ?>" required><!-- required -->
+            <input id="password" type="password" name="signup[password]" placeholder="Введите пароль" value="<?= isset($signup['password']) ? $signup['password'] : null; ?>" required><!-- required -->
             <span class="form__error"><?= isset($errors['password']) ? $errors['password'] : null; ?></span>
         </div>
         <div class="form__item <?= isset($errors['name']) ? "form__item--invalid" : null; ?>">

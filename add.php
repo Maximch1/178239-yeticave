@@ -1,6 +1,5 @@
 <?php
 session_start();
-date_default_timezone_set("Europe/Moscow");
 $title = 'Добавление лота';
 
 require_once ('functions/template.php');
@@ -15,6 +14,9 @@ if (!is_auth()) {
     http_response_code(403);
     exit();
 }
+
+$user = null;
+$user = get_user_by_id($link, $_SESSION['user_id']);
 
 $categories = get_categories($link);
 $errors = [];
@@ -31,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $lot_data = $_POST['lot'];
     $lot_img =  $_FILES['lot_img'];
+    $user_id = $_SESSION['user_id'];
 
     $errors = validate_lot($lot_data);
     $file_errors = validate_lot_file_image($lot_img['tmp_name']);
@@ -38,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (!count($errors)) {
         $lot_data['img'] = add_file($lot_img);
-        $lot_id = insert_lot($link, $lot_data);
+        $lot_id = insert_lot($link, $lot_data, $user_id);
     }
 
     if ($lot_id) {
@@ -50,13 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $content = include_template('add.php', [
     'categories' => $categories,
     'errors'     => $errors,
-    'lot'        => $lot_data
+    'lot'        => $lot_data,
 ]);
 
 $layout = include_template('layout.php', [
     'content'    => $content,
     'title'      => $title,
-    'categories' => $categories
+    'categories' => $categories,
+    'user'       => $user,
 ]);
 
 
