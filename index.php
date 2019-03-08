@@ -1,6 +1,5 @@
 <?php
 session_start();
-date_default_timezone_set("Europe/Moscow");
 $title = 'Главная';
 
 
@@ -24,6 +23,7 @@ if (is_auth()) {
 $content = include_template('index.php', [
     'categories' => $categories,
     'lots' => $lots,
+    'link' => $link,
 ]);
 
 $layout = include_template('layout.php', [

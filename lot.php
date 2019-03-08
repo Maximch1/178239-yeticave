@@ -1,6 +1,5 @@
 <?php
 session_start();
-date_default_timezone_set("Europe/Moscow");
 $title = 'Лот';
 
 require_once ('functions/template.php');
@@ -45,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $bet_rate_id = insert_bet($link, $bet_rate, $user['id'], $lot_id);
     }
     $bets = get_bets_by_lot_id($link, $lot_id);
+    $lot = get_lot($link, $lot_id);
 }
 
 if (!$lot) {
