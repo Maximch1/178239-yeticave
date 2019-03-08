@@ -30,7 +30,7 @@ function get_categories($link) {
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $category = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -53,7 +53,7 @@ function get_lots($link) {
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -76,7 +76,7 @@ function get_lot($link, $lot_id) {
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -174,7 +174,7 @@ function check_isset_email ($link, $email) {
     $res   = mysqli_query($link, $sql);
 
     if (!$res) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     return mysqli_num_rows($res);
@@ -193,7 +193,7 @@ function get_user_by_email ($link, $email) {
     $res   = mysqli_query($link, $sql);
 
     if (!$res) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $user_data = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
@@ -212,7 +212,7 @@ function get_user_by_id ($link, $id) {
     $res   = mysqli_query($link, $sql);
 
     if (!$res) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $user = $res ? mysqli_fetch_array($res, MYSQLI_ASSOC) : null;
@@ -261,7 +261,7 @@ function get_bets_by_lot_id ($link, $lot_id) {
     $res = mysqli_query($link, $sql);
 
     if (!$res) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_stmt_error($link));
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
     $bet = $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : null;

@@ -22,7 +22,7 @@
             <p class="lot-item__description"><?= $lot['description']; ?></p>
         </div>
         <div class="lot-item__right">
-            <?php if (is_auth() & (time_to_end($lot['end_time']) > 0)):?>
+            <?php if (is_auth() & (time_to_end($lot['end_time']) > 0) & !validate_bet_user($user['id'], $lot['user_id'], $bets['0']['user_id'])):?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer">
                     <?= time_to_end($lot['end_time']); ?>
@@ -45,6 +45,7 @@
                     <button type="submit" class="button">Сделать ставку</button>
                 </form>
             </div>
+            <?php endif; ?>
                 <div class="history">
                     <h3>История ставок (<span><?= count($bets) ?></span>)</h3>
                     <table class="history__list">
@@ -57,7 +58,6 @@
                         <?php endforeach; ?>
                     </table>
                 </div>
-            <?php endif; ?>
         </div>
     </div>
 </section>
