@@ -146,3 +146,22 @@ function getValue($array, $key) {
     }
     return $array[$key];
 }
+
+
+/**
+ * Функция выводит одну из найденных ошибок
+ * @param $errors1 array|string ошибка 1
+ * @param $errors2 array|string ошибка 2
+ *
+ * @return array|string
+ */
+function get_errors ($errors1, $errors2) {
+    $errors = [];
+    if ($errors1) {
+        return $errors = $errors1;
+    }
+    if ($errors2) {
+        return $errors = $errors2;
+    }
+    return $errors;
+}

@@ -22,18 +22,21 @@ if (is_auth()) {
     $user = get_user_by_id($link, $_SESSION['user_id']);
 }
 
-$search = trim($_GET['search']) ?? null;
+$search = getValue($_GET,trim('search')) ?? null;
+$cur_page = getValue($_GET,'page') ?? 1;
 
-$cur_page = $_GET['page'] ?? 1;
 $page_items = 9;
 $errors = validate_search($search);
+$errors_pagination = validate_pagination_cur_page($cur_page);
+$errors = get_errors ($errors, $errors_pagination);
 
-if (!count($errors) && $search) {
+if (!$errors && $search) {
     $items_count = get_search_count_lot($link, $search);
     $offset = ($cur_page - 1) * $page_items;
     $pages_count = ceil($items_count / $page_items);
     $pages = range(1, $pages_count);
     $lots = get_search_lots($link, $search, $page_items, $offset);
+    $errors = validate_pagination_count($pages_count, $cur_page);
 }
 
 $content = include_template('search.php', [
