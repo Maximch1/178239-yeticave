@@ -70,7 +70,7 @@ function get_lots($link) {
     $sql = "SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time
              FROM lots l
              JOIN categories c ON c.id = l.category_id
-             WHERE l.winner_id IS NULL";
+             WHERE l.winner_id IS NULL AND l.end_time > CURTIME() ORDER BY l.end_time";
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
@@ -93,7 +93,7 @@ function get_lot($link, $lot_id) {
              FROM lots l
              JOIN categories c ON c.id = l.category_id
              JOIN bets b ON l.id = b.lot_id
-             WHERE l.winner_id IS NULL AND l.id = " . $lot_id . " ORDER BY l.id DESC;";
+             WHERE l.id = " . $lot_id . " ORDER BY l.id DESC;";
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
@@ -408,7 +408,7 @@ function get_category_lot ($link, $category_id, $page_items, $offset) {
     $sql = 'SELECT l.id, l.title AS name, c.title AS category, l.price AS price, l.image, l.end_time
              FROM lots l
              JOIN categories c ON c.id = l.category_id
-             WHERE l.category_id = ' . $category_id . ' AND l.winner_id IS NULL ORDER BY l.id DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
+             WHERE l.category_id = ' . $category_id . ' AND l.winner_id IS NULL  AND l.end_time > CURTIME() ORDER BY l.end_time LIMIT ' . $page_items . ' OFFSET ' . $offset;
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
@@ -438,3 +438,52 @@ function get_category_count_lot ($link, $category_id) {
     $items_count = mysqli_fetch_assoc($result)['cnt'];
     return $items_count;
 }
+
+
+/**
+ * Функция возвращает список лотов по ID категории
+ *
+ * @param $link   mysqli Ресурс соединения
+ * @param $user_id string ID юзера
+ * @param $page_items int количество лотов на странице
+ * @param $offset int количество смещенных лотов
+ *
+ * @return array|null
+ */
+function get_user_bet ($link, $user_id, $page_items, $offset) {
+    $user_id = mysqli_real_escape_string($link, $user_id);
+    $sql = 'SELECT b.id AS bet_id, l.id AS lot_id, l.winner_id, b.user_id AS bet_user_id, l.title AS name, c.title AS category, l.image, l.end_time, b.rate, l.description, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_bet_create_time
+            FROM lots l
+            JOIN categories c ON c.id = l.category_id
+            JOIN bets b ON l.id = b.lot_id
+            WHERE b.user_id = ' . $user_id . ' ORDER BY b.create_time DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
+    $result = mysqli_query($link, $sql);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
+    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $lots;
+}
+
+
+/**
+ * Функция выводит массив с номерами всех страниц, необходимо ввести ID категории, используется для пагинации
+ * @param $link mysqli Ресурс соединения
+ * @param $user_id string ID юзера
+ *
+ * @return array
+ */
+function get_user_count_bets ($link, $user_id) {
+    $user_id = mysqli_real_escape_string($link, $user_id);
+    $result = mysqli_query($link, 'SELECT COUNT(*) as cnt FROM bets WHERE user_id = ' . $user_id);
+
+    if (!$result) {
+        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+    }
+
+    $items_count = mysqli_fetch_assoc($result)['cnt'];
+    return $items_count;
+}
+

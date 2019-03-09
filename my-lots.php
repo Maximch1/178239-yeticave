@@ -1,7 +1,6 @@
 <?php
 session_start();
-$title = 'Лоты по категориям';
-
+$title = 'Мои ставки';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
@@ -18,25 +17,26 @@ if (is_auth()) {
     $user = get_user_by_id($link, $_SESSION['user_id']);
 }
 
-$category_id = (int)$_GET['category'];
 $cur_page = $_GET['page'] ?? 1;
 $page_items = 9;
-$category_title = get_category_title($link, $category_id);
+//$errors = validate_search($search);
 
-    $items_count = get_category_count_lot($link, $category_id);
+//if (!count($errors) && $search) {
+    $items_count = get_user_count_bets($link, $user['id']);
     $offset = ($cur_page - 1) * $page_items;
     $pages_count = ceil($items_count / $page_items);
     $pages = range(1, $pages_count);
-    $lots = get_category_lot($link, $category_id, $page_items, $offset);
+    $bets = get_user_bet($link, $user['id'], $page_items, $offset);
+//}
 
-$content = include_template('all-lots.php', [
+$content = include_template('my-lots.php', [
     'categories' => $categories,
-    'lots' => $lots,
+    'bets' => $bets,
+//    'search' => $search,
     'pages' => $pages,
     'pages_count' => $pages_count,
     'cur_page' => $cur_page,
-    'category_title' => $category_title,
-    'category_id' => $category_id,
+//    'errors' => $errors,
     'link' => $link,
 ]);
 

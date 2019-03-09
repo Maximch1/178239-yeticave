@@ -103,19 +103,24 @@ const MINUTES = ['минут', 'минута', 'минуты'];
 
 
 /**
- * Функция форматирует поле с датой и временем в истории ставок, исходя из давности сделанной ставки.
+ * Функция форматирует поле с датой и временем, исходя из давности даты.
  * @param $str_time string дата + время с БД
  *
  * @return string|null
  */
-function get_time_format_bet($str_time) {
+function get_time_format($str_time) {
     $secs_to_end = time() - strtotime($str_time);
     $hours   = sprintf("%'.02d", floor($secs_to_end / 3600));
     $minutes = sprintf("%'.02d", floor(($secs_to_end % 3600) / 60));
 
-    if ($hours < 24 && $hours > 0) {
+    if (strtotime('yesterday') < strtotime($str_time) AND strtotime('midnight') > strtotime($str_time) ) {
+        return 'Вчера, в ' . date('H:i', strtotime($str_time));
+    }
+
+    if (strtotime('midnight') < strtotime($str_time) AND $hours <= 24 && $hours > 0) {
         return $hours . ' ' . get_correct_word($hours, HOURS) . ' ' .  $minutes . ' ' . get_correct_word($minutes, MINUTES) . ' назад';
     }
+
 
     if ($hours <= 0 AND $minutes <= 1) {
         return 'минуту назад';
@@ -125,4 +130,19 @@ function get_time_format_bet($str_time) {
         return $minutes . ' ' . get_correct_word($minutes, MINUTES) . ' назад';
     }
     return null;
+}
+
+
+/**
+ * Функция проверки массива на существование переменной.
+ * @param $array array массив
+ * @param $key string ключ массива
+ *
+ * @return null|array
+ */
+function getValue($array, $key) {
+    if (!isset($array[$key])) {
+        return null;
+    }
+    return $array[$key];
 }

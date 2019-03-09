@@ -54,7 +54,7 @@
                             <tr class="history__item">
                                 <td class="history__name"><?= htmlspecialchars($bet['name']) ?></td>
                                 <td class="history__price"><?= format_price_bets($bet['rate']) ?></td>
-                                <td class="history__time"><?= get_time_format_bet($bet['create_time']) ? get_time_format_bet($bet['create_time']) : $bet['format_create_time']; ?></td>
+                                <td class="history__time"><?= get_time_format($bet['create_time']) ? get_time_format($bet['create_time']) : $bet['format_create_time']; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
