@@ -134,7 +134,6 @@ function validate_user_file_avatar($img_name)
 
         return $errors;
     }
-    $errors['img'] = 'Вы не загрузили файл';
 
     return $errors;
 }
