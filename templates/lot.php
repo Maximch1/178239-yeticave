@@ -5,7 +5,7 @@
  * @var array   $user          массив с данными юзера
  * @var array   $bets          массив со ставками
  * @var string  $rate          шаг ставки введенный юзером
- * @var string  $errors        ошибка
+ * @var string  $error        ошибка
  * @var boolean $show_bet_form определяем, можно ли показывать форму ввода ставки, или нет
  */
 ?>
@@ -50,13 +50,13 @@
                     </div>
                     <?php if ($show_bet_form): ?>
                         <form class="lot-item__form" action="lot.php?id=<?= get_value($lot, 'id'); ?>" method="post">
-                            <p class="lot-item__form-item form__item <?= ! empty($errors) ? "form__item--invalid" : null; ?>">
+                            <p class="lot-item__form-item form__item <?= ! empty($error) ? "form__item--invalid" : null; ?>">
                                 <label for="cost">Ваша ставка</label>
                                 <input id="cost" type="text" name="rate"
                                        placeholder="<?= htmlspecialchars(get_value($lot, 'max_rate') + get_value($lot,
                                                'step_rate')); ?>"
                                        value="<?= htmlspecialchars($rate) ? htmlspecialchars($rate) : null; ?>">
-                                <span class="form__error"><?= $errors; ?></span>
+                                <span class="form__error"><?= $error; ?></span>
                             </p>
                             <button type="submit" class="button">Сделать ставку</button>
                         </form>

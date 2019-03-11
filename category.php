@@ -11,6 +11,7 @@ require_once('functions/template.php');
 require_once('functions/db.php');
 require_once('functions/user.php');
 require_once('functions/validators_pagination.php');
+require_once('functions/validators_category.php');
 
 if ( ! file_exists('config.php')) {
     die('Создайте файл config.php на основе config.sample.php');
@@ -22,6 +23,11 @@ $link = db_connect(get_value($config, 'db'));
 
 $categories = get_categories($link);
 $user       = null;
+$error       = null;
+$category_id = null;
+$lots = null;
+$pages = null;
+$pages_count = null;
 
 if (is_auth()) {
     $user = get_user_by_id($link, $_SESSION['user_id']);
@@ -30,7 +36,11 @@ if (is_auth()) {
 $category_id    = (int)get_value($_GET, 'id');
 $cur_page       = get_value($_GET, 'page') ?? 1;
 $page_items     = $config['pagination']['items_per_page'];
-$error          = validate_pagination_cur_page($cur_page);
+$error          = validate_category($category_id);
+if ( ! $error) {
+    $error = validate_pagination_cur_page($cur_page);
+}
+
 $category_title = get_category_title($link, $category_id);
 
 if ( ! $error) {

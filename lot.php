@@ -39,19 +39,16 @@ if ( ! is_numeric($lot_id)) {
 
 $lot      = get_lot($link, $lot_id);
 $bets     = get_bets_by_lot_id($link, $lot_id);
-$errors   = null;
+$error   = null;
 $bet_rate = null;
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ( ! get_value($_POST, 'rate')) {
-        die('Некорректные данные для добавления ставки');
-    }
 
     $bet_rate = get_value($_POST, 'rate');
-    $errors   = validate_bet(get_value($user, 'id'), $bet_rate, $lot, get_value($bets, 0));
+    $error   = validate_bet(get_value($user, 'id'), $bet_rate, $lot, get_value($bets, 0));
 
-    if ( ! count($errors)) {
+    if ( ! $error) {
         $bet_rate_id = insert_bet($link, $bet_rate, get_value($user, 'id'), $lot_id);
         header("Location: lot.php?id=" . $lot_id);
         exit();
@@ -70,7 +67,7 @@ if ( ! $lot) {
         'lot'           => $lot,
         'user'          => $user,
         'bets'          => $bets,
-        'errors'        => $errors,
+        'error'        => $error,
         'rate'          => $bet_rate,
         'show_bet_form' => $show_bet_form,
     ]);

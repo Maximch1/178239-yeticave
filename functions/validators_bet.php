@@ -8,25 +8,23 @@
  * @param $lot              array массив лота
  * @param $last_bet         array массив ставок
  *
- * @return array массив ошибок
+ * @return string
  */
 function validate_bet($user_id_auth, $bet_rate, $lot, $last_bet)
 {
-    $errors = [];
-
     if ($error = validate_bet_user($user_id_auth, get_value($lot, 'user_id'), get_value($last_bet, 'user_id'))) {
-        $errors = $error;
+        return $error;
     }
 
     if ($error = validate_bet_end_time(get_value($lot, 'end_time'))) {
-        $errors = $error;
+        return $error;
     }
 
     if ($error = validate_bet_rate($bet_rate, get_value($lot, 'max_rate'), get_value($lot, 'step_rate'))) {
-        $errors = $error;
+        return $error;
     }
 
-    return $errors;
+    return null;
 }
 
 
