@@ -30,7 +30,7 @@
                             <div>
                                 <h3 class="rates__title"><a href="lot.php?id=<?= get_value($bet,
                                         "lot_id"); ?>"><?= htmlspecialchars(get_value($bet, 'name')); ?></a></h3>
-                                <p><?= get_value($bet, 'description'); ?></p>
+                                <p><?= htmlspecialchars(get_value($bet, 'description')); ?></p>
                             </div>
 
                         </td>

@@ -126,14 +126,33 @@ function validate_user_file_avatar($img_name)
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $img_name);
 
-        if (mb_strpos($file_type, 'image') === false) {
-            $errors['img'] = 'Загрузите картинку';
+        if ( ! is_image($file_type)) {
+            $errors['img'] = 'Загрузите картинку в формате jpeg или png';
 
             return $errors;
         }
 
         return $errors;
     }
+    $errors['img'] = 'Вы не загрузили файл';
 
     return $errors;
+}
+
+/**
+ * Функция сравнивает перечисленные в функции типы с типом файла
+ *
+ * @param $mime_type string тип файла
+ *
+ * @return bool
+ */
+function is_image($mime_type)
+{
+    $allow_types = [
+        'image/jpeg',
+        'image/png'
+
+    ];
+
+    return (array_search($mime_type, $allow_types) !== false);
 }

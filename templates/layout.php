@@ -34,7 +34,7 @@
                 <?php if ($user): ?>
                     <div class="user-menu__logged">
                         <p><?= strip_tags(get_value($user, 'name')) ?></p>
-                        <a href="my-lots.php">Мои ставки</a>
+                        <a href="my-bets.php">Мои ставки</a>
                         <a href="logout.php">Выйти</a>
                     </div>
                 <?php else: ?>

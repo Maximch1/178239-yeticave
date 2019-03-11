@@ -28,7 +28,7 @@ if (is_auth()) {
 
 $bets = get_user_bets($link, get_value($user, 'id'));
 
-$content = include_template('my-lots.php', [
+$content = include_template('my-bets.php', [
     'categories' => $categories,
     'bets'       => $bets,
 ]);

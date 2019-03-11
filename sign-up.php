@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors      = array_merge($errors, $file_errors);
 
     if ( ! count($errors)) {
-        if (is_uploaded_file(get_value($user_img,'tmp_name'))) {
+        if (is_uploaded_file(get_value($user_img, 'tmp_name'))) {
             $user_data['avatar'] = add_file($user_img);
         } else {
             $user_data['avatar'] = '';

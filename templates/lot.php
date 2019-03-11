@@ -29,8 +29,8 @@
                     <img src="<?= htmlspecialchars(get_value($lot, 'image')); ?>" width="730" height="548"
                          alt="<?= htmlspecialchars(get_value($lot, 'name')); ?>">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= get_value($lot, 'category'); ?></span></p>
-                <p class="lot-item__description"><?= get_value($lot, 'description'); ?></p>
+                <p class="lot-item__category">Категория: <span><?= htmlspecialchars(get_value($lot, 'category')); ?></span></p>
+                <p class="lot-item__description"><?= htmlspecialchars(get_value($lot, 'description')); ?></p>
             </div>
             <div class="lot-item__right">
                 <div class="lot-item__state">

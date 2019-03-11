@@ -33,7 +33,7 @@
                                      alt="<?= htmlspecialchars(get_value($lot, 'name')); ?>">
                             </div>
                             <div class="lot__info">
-                                <span class="lot__category"><?= get_value($lot, 'category'); ?></span>
+                                <span class="lot__category"><?= htmlspecialchars(get_value($lot, 'category')); ?></span>
                                 <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= get_value($lot,
                                         'id'); ?>"><?= htmlspecialchars(get_value($lot, 'name')); ?></a></h3>
                                 <div class="lot__state">

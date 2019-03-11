@@ -38,7 +38,8 @@
         <div class="form__item <?= get_value($errors, 'name') ? "form__item--invalid" : null; ?>">
             <label for="name">Имя*</label>
             <input id="name" type="text" name="signup[name]" placeholder="Введите имя"
-                   value="<?= get_value($signup, 'name') ? get_value($signup, 'name') : null; ?>">
+                   value="<?= htmlspecialchars(get_value($signup, 'name')) ? htmlspecialchars(get_value($signup,
+                       'name')) : null; ?>">
             <span class="form__error"><?= get_value($errors, 'name') ? get_value($errors, 'name') : null; ?></span>
         </div>
         <div class="form__item <?= get_value($errors, 'contacts') ? "form__item--invalid" : null; ?>">

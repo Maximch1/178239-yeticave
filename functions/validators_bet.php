@@ -87,6 +87,10 @@ function validate_bet_rate($rate, $max_rate, $step_rate)
         return 'Значение должно быть числом';
     }
 
+    if ($rate < 0) {
+        return 'Цена не должна быть отрицательной';
+    }
+
     if ( ! ctype_digit($rate)) {
         return 'Введите целое число';
     }
@@ -97,10 +101,6 @@ function validate_bet_rate($rate, $max_rate, $step_rate)
 
     if ($rate > 10000000) {
         return 'Сумма не должно превышать 10&nbsp;000&nbsp;000';
-    }
-
-    if ($rate < 0) {
-        return 'Цена не должна быть отрицательной';
     }
 
     return null;

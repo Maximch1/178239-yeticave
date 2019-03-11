@@ -139,16 +139,16 @@ function validate_lot_step_rate($step_rate)
         return 'Значение должно быть числом';
     }
 
+    if ($step_rate <= 0) {
+        return 'Шаг ставки должен быть больше ноля';
+    }
+
     if ( ! ctype_digit($step_rate)) {
         return 'Введите целое число';
     }
 
     if ($step_rate > 10000000) {
         return 'Шаг ставки не должен превышать 10&nbsp;000&nbsp;000';
-    }
-
-    if ($step_rate <= 0) {
-        return 'Шаг ставки должен быть больше ноля';
     }
 
     return null;
@@ -200,8 +200,8 @@ function validate_lot_file_image($img_name)
         $finfo     = finfo_open(FILEINFO_MIME_TYPE);
         $file_type = finfo_file($finfo, $img_name);
 
-        if (mb_strpos($file_type, 'image') === false) {
-            $errors['img'] = 'Загрузите картинку';
+        if ( ! is_image($file_type)) {
+            $errors['img'] = 'Загрузите картинку в формате jpeg или png';
 
             return $errors;
         }
@@ -211,6 +211,24 @@ function validate_lot_file_image($img_name)
     $errors['img'] = 'Вы не загрузили файл';
 
     return $errors;
+}
+
+/**
+ * Функция сравнивает перечисленные в функции типы с типом файла
+ *
+ * @param $mime_type string тип файла
+ *
+ * @return bool
+ */
+function is_image($mime_type)
+{
+    $allow_types = [
+        'image/jpeg',
+        'image/png'
+
+    ];
+
+    return (array_search($mime_type, $allow_types) !== false);
 }
 
 /**
