@@ -3,11 +3,9 @@
  * @var array $categories категории лотов
  * @var string $content контент основного шаблона
  * @var string $title заголовок страницы
- * @var string $user_name имя пользователя
- * @var string $is_auth определяет пользователь или нет
+ * @var array $user массив с данными юзера
  */
 ?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -35,7 +33,7 @@
             <nav class="user-menu">
                 <?php if ($user): ?>
                     <div class="user-menu__logged">
-                        <p><?= strip_tags($user['name']) ?></p>
+                        <p><?= strip_tags(get_value($user,'name')) ?></p>
                         <a href="my-lots.php">Мои ставки</a>
                         <a href="logout.php">Выйти</a>
                     </div>
@@ -60,7 +58,9 @@
         <ul class="nav__list container">
             <?php foreach ($categories as $category): ?>
                 <li class="nav__item">
-                    <a href="all-lots.php?category=<?= $category['id']; ?>"><?= $category['title']; ?></a>
+                    <a href="category.php?id=<?= get_value($category,'id'); ?>">
+                        <?= get_value($category,'title'); ?>
+                    </a>
                 </li>
             <?php endforeach; ?>
         </ul>

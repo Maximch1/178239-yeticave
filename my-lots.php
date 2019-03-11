@@ -1,10 +1,19 @@
 <?php
 session_start();
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $title = 'Мои ставки';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/user.php');
+
+if (!file_exists ('config.php')) {
+    die('Создайте файл config.php на основе config.sample.php');
+}
 
 $config = require 'config.php';
 
@@ -14,30 +23,14 @@ $categories = get_categories($link);
 $user = null;
 
 if (is_auth()) {
-    $user = get_user_by_id($link, $_SESSION['user_id']);
+    $user = get_user_by_id($link, get_value($_SESSION, 'user_id'));
 }
 
-$cur_page = $_GET['page'] ?? 1;
-$page_items = 9;
-//$errors = validate_search($search);
-
-//if (!count($errors) && $search) {
-    $items_count = get_user_count_bets($link, $user['id']);
-    $offset = ($cur_page - 1) * $page_items;
-    $pages_count = ceil($items_count / $page_items);
-    $pages = range(1, $pages_count);
-    $bets = get_user_bet($link, $user['id'], $page_items, $offset);
-//}
+$bets = get_user_bets($link, get_value($user,'id'));
 
 $content = include_template('my-lots.php', [
     'categories' => $categories,
     'bets' => $bets,
-//    'search' => $search,
-    'pages' => $pages,
-    'pages_count' => $pages_count,
-    'cur_page' => $cur_page,
-//    'errors' => $errors,
-    'link' => $link,
 ]);
 
 $layout = include_template('layout.php', [

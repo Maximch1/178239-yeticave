@@ -6,4 +6,7 @@ return [
         'password' => '',
         'database' => ''
     ],
+    'pagination' => [
+        'items_per_page' => 9
+    ]
 ];

@@ -10,19 +10,19 @@
 function validate_user ($link, $user_data) {
     $errors   = [];
 
-    if ($error = validate_user_email($link, $user_data['email'])) {
+    if ($error = validate_user_email($link, get_value($user_data,'email'))) {
         $errors['email'] = $error;
     }
 
-    if ($error = validate_user_password($user_data['password'])) {
+    if ($error = validate_user_password(get_value($user_data,'password'))) {
         $errors['password'] = $error;
     }
 
-    if ($error = validate_user_name($user_data['name'])) {
+    if ($error = validate_user_name(get_value($user_data,'name'))) {
         $errors['name'] = $error;
     }
 
-    if ($error = validate_user_contacts($user_data['contacts'])) {
+    if ($error = validate_user_contacts(get_value($user_data,'contacts'))) {
         $errors['contacts'] = $error;
     }
     return $errors;
@@ -99,8 +99,7 @@ function validate_user_contacts ($contacts) {
 
 /**
  * Функция проверяет валидность файла, файл должен быть изображением.
- *
- * @param $img_name array массив _FILES
+ * @param $img_name string наименование файла
  *
  * @return array
  */

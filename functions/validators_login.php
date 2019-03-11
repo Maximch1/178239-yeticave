@@ -2,21 +2,19 @@
 
 /**
  * Функция проводит проверку на ошибки формы входа
- * @param $user_data array массив в _POST, который надо проверить
- * @param $user_data_base array массив с данными юзера
+ * @param $user_data array массив с введенными юзером данными, который надо проверить
+ * @param $user_data_base array массив с данными юзера с БД
  *
  * @return array массив ошибок
  */
-
-
 function validate_login ($user_data, $user_data_base) {
     $errors = [];
 
-    if ($error = validate_user_login_email($user_data['email'], $user_data_base['email'])) {
+    if ($error = validate_user_login_email(get_value($user_data,'email'), get_value($user_data_base,'email'))) {
         $errors['email'] = $error;
     }
 
-    if ($error = validate_user_login_password($user_data['password'], $user_data_base['password'])) {
+    if ($error = validate_user_login_password(get_value($user_data,'password'), get_value($user_data_base,'password'))) {
         $errors['password'] = $error;
     }
     return $errors;

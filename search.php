@@ -1,13 +1,21 @@
 <?php
 session_start();
-$title = 'Поиск';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$title = 'Поиск';
 
 require_once ('functions/template.php');
 require_once ('functions/db.php');
 require_once ('functions/user.php');
 require_once ('functions/validators_search.php');
 require_once ('functions/validators_pagination.php');
+
+if (!file_exists ('config.php')) {
+    die('Создайте файл config.php на основе config.sample.php');
+}
 
 $config = require 'config.php';
 
@@ -16,27 +24,31 @@ $link = db_connect($config['db']);
 $categories = get_categories($link);
 $user = null;
 $search = null;
-$errors = null;
+$error = null;
+$lots = null;
+$pages = null;
+$pages_count = null;
 
 if (is_auth()) {
-    $user = get_user_by_id($link, $_SESSION['user_id']);
+    $user = get_user_by_id($link, get_value($_SESSION, 'user_id'));
 }
 
-$search = getValue($_GET,trim('search')) ?? null;
-$cur_page = getValue($_GET,'page') ?? 1;
+$search = trim(get_value($_GET,'search'));
+$cur_page = get_value($_GET,'page') ?? 1;
 
-$page_items = 9;
-$errors = validate_search($search);
-$errors_pagination = validate_pagination_cur_page($cur_page);
-$errors = get_errors ($errors, $errors_pagination);
+$page_items = $config['pagination']['items_per_page'];
+$error = validate_search($search);
+if (!$error) {
+    $error = validate_pagination_cur_page($cur_page);
+}
 
-if (!$errors && $search) {
+if (!$error && $search) {
     $items_count = get_search_count_lot($link, $search);
     $offset = ($cur_page - 1) * $page_items;
     $pages_count = ceil($items_count / $page_items);
     $pages = range(1, $pages_count);
     $lots = get_search_lots($link, $search, $page_items, $offset);
-    $errors = validate_pagination_count($pages_count, $cur_page);
+    $error = validate_pagination_count($pages_count, $cur_page);
 }
 
 $content = include_template('search.php', [
@@ -46,8 +58,7 @@ $content = include_template('search.php', [
     'pages' => $pages,
     'pages_count' => $pages_count,
     'cur_page' => $cur_page,
-    'errors' => $errors,
-    'link' => $link,
+    'error' => $error,
 ]);
 
 $layout = include_template('layout.php', [

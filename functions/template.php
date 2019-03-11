@@ -26,7 +26,7 @@ function include_template($name, $data) {
 
 /**
  * Функция окуругляет число в большую сторону и разбивает на разделы возвращая число с знаком рубля
- * @param $price string
+ * @param $price string число
  *
  * @return string
  */
@@ -36,7 +36,7 @@ function format_price($price) {
 
 /**
  * Функция окуругляет число в большую сторону и разбивает на разделы возвращая число с знаком рубля. использунтся в выводе ставок.
- * @param $price string
+ * @param $price string число
  *
  * @return string
  */
@@ -64,43 +64,40 @@ function time_to_end ($str_time) {
     return $hours.":".$minutes;
 }
 
-
 /**
- * Функция загружает файл в папку uploads/ и выводит имя файла в массив _POST
- * @param $img_name
+ * Функция загружает файл в папку uploads/ и выводит путь к файлу
+ * @param $img_name array массив файла
  *
  * @return mixed
  */
 function add_file ($img_name) {
-    $file_type = pathinfo($img_name['name'], PATHINFO_EXTENSION);
+    $file_type = pathinfo(get_value($img_name,'name'), PATHINFO_EXTENSION);
     $filename = uniqid() . '.' . $file_type;
-    move_uploaded_file($img_name['tmp_name'], 'uploads/' . $filename);
+    if (!move_uploaded_file(get_value($img_name,'tmp_name'), 'uploads/' . $filename)) {
+        die('Проверьте что папка "upload" существует и доступна для записи');
+    }
     $data = 'uploads/' . $filename;
     return $data;
 }
 
-
-
 /**
  * Функция возращает верное написание слова из массива
- *
- * @param integer $time
- * @param array $words
+ * @param $time int время
+ * @param $words array массив HOURS или MINUTES
  * @return string возращает правилный вариант склонения слова в русском языке
  */
 function get_correct_word ($time, $words) {
     if ($time % 100 > 4 && $time % 100 < 21) {
-        return $words[0];
+        return get_value($words,0);
     } elseif ($time % 10 === 1) {
-        return $words[1];
+        return get_value($words,1);
     } elseif ($time % 10 > 1 && $time % 10 < 5) {
-        return $words[2];
+        return get_value($words,2);
     }
-    return $words[0];
+    return get_value($words,0);
 };
 const HOURS = ['часов', 'час', 'часа'];
 const MINUTES = ['минут', 'минута', 'минуты'];
-
 
 /**
  * Функция форматирует поле с датой и временем, исходя из давности даты.
@@ -138,30 +135,12 @@ function get_time_format($str_time) {
  * @param $array array массив
  * @param $key string ключ массива
  *
- * @return null|array
+ * @return mixed
  */
-function getValue($array, $key) {
+function get_value($array, $key) {
     if (!isset($array[$key])) {
         return null;
     }
     return $array[$key];
 }
 
-
-/**
- * Функция выводит одну из найденных ошибок
- * @param $errors1 array|string ошибка 1
- * @param $errors2 array|string ошибка 2
- *
- * @return array|string
- */
-function get_errors ($errors1, $errors2) {
-    $errors = [];
-    if ($errors1) {
-        return $errors = $errors1;
-    }
-    if ($errors2) {
-        return $errors = $errors2;
-    }
-    return $errors;
-}

@@ -2,34 +2,34 @@
 
 /**
  * Функция проводит проверку на ошибки формы лота
- * @param $lot_data array массив в _POST, который надо проверить
+ * @param $lot_data array массив с введенными юзером данными, который надо проверить
  *
  * @return array массив ошибок
  */
 function validate_lot($lot_data) {
     $errors   = [];
 
-    if ($error = validate_lot_title($lot_data['title'])) {
+    if ($error = validate_lot_title(get_value($lot_data,'title'))) {
         $errors['title'] = $error;
     }
 
-    if ($error = validate_lot_price($lot_data['price'])) {
+    if ($error = validate_lot_price(get_value($lot_data,'price'))) {
         $errors['price'] = $error;
     }
 
-    if ($error = validate_lot_description($lot_data['description'])) {
+    if ($error = validate_lot_description(get_value($lot_data,'description'))) {
         $errors['description'] = $error;
     }
 
-    if ($error = validate_lot_category_id($lot_data['category_id'])) {
+    if ($error = validate_lot_category_id(get_value($lot_data,'category_id'))) {
         $errors['category_id'] = $error;
     }
 
-    if ($error = validate_lot_step_rate($lot_data['step_rate'])) {
+    if ($error = validate_lot_step_rate(get_value($lot_data,'step_rate'))) {
         $errors['step_rate'] = $error;
     }
 
-    if ($error = validate_lot_end_time($lot_data['end_time'])) {
+    if ($error = validate_lot_end_time(get_value($lot_data,'end_time'))) {
         $errors['end_time'] = $error;
     }
     return $errors;
@@ -152,7 +152,7 @@ function validate_lot_end_time($end_time) {
     $regexp = '/(\d{4})\-(\d{2})\-(\d{2})/m';
 
     if (preg_match($regexp, $end_time, $parts) && count($parts) == 4) {
-        $result = checkdate($parts[2], $parts[3], $parts[1]);
+        $result = checkdate(get_value($parts,2), get_value($parts,3), get_value($parts,1));
     }
 
     if (!$result) {
@@ -167,8 +167,7 @@ function validate_lot_end_time($end_time) {
 
 /**
  * Функция проверяет валидность файла, файл должен быть изображением.
- *
- * @param $img_name array массив _FILES
+ * @param $img_name string наименование файла
  *
  * @return array
  */
@@ -186,4 +185,34 @@ function validate_lot_file_image($img_name) {
     }
     $errors['img'] = 'Вы не загрузили файл';
     return $errors;
+}
+
+/**
+ * Функция проверяет отображаль ли форму добавления ставки или нет.
+ * Скрывает, если пользователь не авторизирован, торги окончены, автору лота, автору последней ставки.
+ *
+ * @param $user array юзер
+ * @param $lot array данные юзера
+ * @param $last_bet array данные последней ставки
+ *
+ * @return bool
+ */
+function show_bet_form ($user, $lot, $last_bet) {
+    if (!$user) {
+        return false;
+    }
+
+    if (get_value($lot, 'end_time') < date('Y-m-d H:i:s')){
+        return false;
+    }
+
+    if (get_value($user,'id') === get_value($lot,'user_id')) {
+        return false;
+    }
+
+    if (get_value($user,'id') === get_value($last_bet, 'user_id')) {
+        return false;
+    }
+
+    return true;
 }

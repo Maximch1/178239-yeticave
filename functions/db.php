@@ -2,12 +2,12 @@
 
 /**
  * Функция производит соединение с базой SQL по параметрам, указанным в файле config.php
- * @param $config array
+ * @param $config array массив с данными для подключения к базе SQL
  *
  * @return mysqli
  */
 function db_connect ($config) {
-    $link = mysqli_connect($config["host"], $config["user"], $config["password"], $config["database"]);
+    $link = mysqli_connect(get_value($config,"host"), get_value($config,'user'), get_value($config,'password'), get_value($config,'database'));
 
     if (!$link) {
         die ("Ошибка подключения: " . mysqli_connect_error());
@@ -19,8 +19,6 @@ function db_connect ($config) {
 
 /**
  * Функция возвращает список категорий.
- * аргумент - соединение с базой.
- *
  * @param $link mysqli Ресурс соединения
  *
  * @return array|null
@@ -38,9 +36,7 @@ function get_categories($link) {
 }
 
 /**
- * Функция возвращает категорию по ID.
- * аргумент - соединение с базой.
- *
+ * Функция возвращает наименование категории по ID категории.
  * @param $link mysqli Ресурс соединения
  * @param $id int ID категории
  *
@@ -55,13 +51,11 @@ function get_category_title($link, $id) {
     }
 
     $category_title = mysqli_fetch_assoc($result);
-    return $category_title['title'];
+    return get_value($category_title,'title');
 }
 
 /**
  * Функция возвращает список открытых лотов
- * аргумент - соединение с базой.
- *
  * @param $link mysqli Ресурс соединения
  *
  * @return array|null
@@ -100,21 +94,19 @@ function get_lot($link, $lot_id) {
         die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
-    $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-    if (!isset($lots[0]['max_rate'])) {
-        $lots[0]['max_rate'] = $lots[0]['price'];
+    $lot = get_value(mysqli_fetch_all($result, MYSQLI_ASSOC),0);
+    if (!get_value($lot,'max_rate')) {
+        $lot['max_rate'] = get_value($lot,'price');
     }
 
-    if (!isset($lots[0]['id'])) {
+    if (!get_value($lot,'id')) {
         return null;
     }
-    return $lots[0];
+    return $lot;
 }
 
 /**
  * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
- *
  * @param $link mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param array $data Данные для вставки на место плейсхолдеров
@@ -157,9 +149,8 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
 /**
  * Функция добавляет лот в базу SQL, возвращает id добавленного лота
- *
  * @param $link mysqli Ресурс соединения
- * @param $lots array массив в _POST
+ * @param $lots array массив c данными лота
  * @param $user_id int ID юзера
  *
  * @return int|null
@@ -167,7 +158,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 function insert_lot ($link, $lots, $user_id) {
     $sql = 'INSERT INTO lots (create_time, title, description, image, category_id, price, end_time, step_rate, user_id ) VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$lots['title'], $lots['description'], $lots['img'],  $lots['category_id'], $lots['price'], $lots['end_time'], $lots['step_rate'], $user_id]);
+    $stmt = db_get_prepare_stmt($link, $sql, [get_value($lots,'title'), get_value($lots,'description'), get_value($lots,'img'),  get_value($lots,'category_id'), get_value($lots,'price'), get_value($lots,'end_time'), get_value($lots,'step_rate'), $user_id]);
 
     if (!mysqli_stmt_execute($stmt)) {
         die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
@@ -183,7 +174,6 @@ function insert_lot ($link, $lots, $user_id) {
 
 /**
  * Функция производит поиск в базе users по полю email, если находит, то возвращает количество найденных записей.
- *
  * @param $link mysqli Ресурс соединения
  * @param $email string email юзера
  *
@@ -247,15 +237,15 @@ function get_user_by_id ($link, $id) {
 /**
  * Функция добавляет юзера в базу SQL, возвращает id добавленного юзера
  * @param $link mysqli Ресурс соединения
- * @param $user array массив в _POST
+ * @param $user array массив с данными юзера
  *
- * @return int|null возвращает все данные пользователя с БД
+ * @return int|null
  */
 function insert_user ($link, $user) {
-    $password = password_hash($user['password'], PASSWORD_DEFAULT);
+    $password = password_hash(get_value($user,'password'), PASSWORD_DEFAULT);
     $sql = 'INSERT INTO users (email, name, password, contacts, avatar) VALUES (?, ?, ?, ?, ?)';
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$user['email'], $user['name'], $password, $user['contacts'], $user['avatar']]);
+    $stmt = db_get_prepare_stmt($link, $sql, [get_value($user,'email'), get_value($user,'name'), $password, get_value($user,'contacts'), get_value($user,'avatar')]);
 
     if (!mysqli_stmt_execute($stmt)) {
         die('Ошибка при выполнении запроса' . mysqli_stmt_error($stmt));
@@ -270,7 +260,7 @@ function insert_user ($link, $user) {
 }
 
 /**
- * Функция производит поиск ставок по ID лота, возвращает данные пользователей и сделанные ими ставки сортируя по дате создания ставки с лимитом в 10 последних записей.
+ * Функция производит поиск ставок по ID лота, возвращает данные пользователей и сделанные ими ставки сортируя по дате создания ставки.
  * @param $link mysqli Ресурс соединения
  * @param $lot_id int ID ставки
  *
@@ -278,7 +268,7 @@ function insert_user ($link, $user) {
  */
 function get_bets_by_lot_id ($link, $lot_id) {
     $sql = 'SELECT b.id, b.user_id, u.name, b.rate, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_create_time 
-            FROM bets b JOIN users u ON b.user_id = u.id WHERE b.lot_id = ' . (int)$lot_id . ' ORDER BY create_time DESC LIMIT 10;';
+            FROM bets b JOIN users u ON b.user_id = u.id WHERE b.lot_id = ' . (int)$lot_id . ' ORDER BY create_time DESC;';
     $res = mysqli_query($link, $sql);
 
     if (!$res) {
@@ -293,7 +283,7 @@ function get_bets_by_lot_id ($link, $lot_id) {
 /**
  * Функция добавляет ставку в базу SQL, возвращает id добавленной ставки
  * @param $link mysqli Ресурс соединения
- * @param $rate int ставка
+ * @param $rate int введенная юзером сумма ставки
  * @param $user_id int ID юзера
  * @param $lot_id int ID лота
  *
@@ -318,7 +308,6 @@ function insert_bet ($link, $rate, $user_id, $lot_id) {
 
 /**
  * Функция возвращает список лотов по поисковому запросу
- *
  * @param $link   mysqli Ресурс соединения
  * @param $search string значение поиска
  * @param $page_items int количество лотов на странице
@@ -359,7 +348,7 @@ function get_search_count_lot ($link, $search) {
         die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
-    $items_count = mysqli_fetch_assoc($result)['cnt'];
+    $items_count = get_value(mysqli_fetch_assoc($result),'cnt');
     return $items_count;
 }
 
@@ -380,11 +369,11 @@ function update_lot_winner ($link){
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     if ($lots) {
         foreach ($lots as $lot_id) {
-            if (strtotime($lot_id['end_time']) < time()) {
-                $sql = 'UPDATE lots SET winner_id = (SELECT user_id FROM bets WHERE rate = (SELECT MAX(rate) FROM bets WHERE lot_id = ' . $lot_id['id'] . ' )) WHERE id = ' . $lot_id['id'];
+            if (strtotime(get_value($lot_id,'end_time')) < time()) {
+                $sql = 'UPDATE lots SET winner_id = (SELECT user_id FROM bets WHERE rate = (SELECT MAX(rate) FROM bets WHERE lot_id = ' . get_value($lot_id,'id') . ' )) WHERE id = ' . get_value($lot_id,'id');
                 $res = mysqli_query($link, $sql);
 
-                if ( !$res) {
+                if (!$res) {
                     die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
                 }
             }
@@ -395,7 +384,6 @@ function update_lot_winner ($link){
 
 /**
  * Функция возвращает список лотов по ID категории
- *
  * @param $link   mysqli Ресурс соединения
  * @param $category_id string ID категории
  * @param $page_items int количество лотов на странице
@@ -435,28 +423,25 @@ function get_category_count_lot ($link, $category_id) {
         die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
     }
 
-    $items_count = mysqli_fetch_assoc($result)['cnt'];
+    $items_count = get_value(mysqli_fetch_assoc($result),'cnt');
     return $items_count;
 }
 
 
 /**
- * Функция возвращает список лотов по ID категории
- *
+ * Функция возвращает список ставок по ID юзера
  * @param $link   mysqli Ресурс соединения
  * @param $user_id string ID юзера
- * @param $page_items int количество лотов на странице
- * @param $offset int количество смещенных лотов
  *
  * @return array|null
  */
-function get_user_bet ($link, $user_id, $page_items, $offset) {
+function get_user_bets ($link, $user_id) {
     $user_id = mysqli_real_escape_string($link, $user_id);
     $sql = 'SELECT b.id AS bet_id, l.id AS lot_id, l.winner_id, b.user_id AS bet_user_id, l.title AS name, c.title AS category, l.image, l.end_time, b.rate, l.description, b.create_time, DATE_FORMAT(b.create_time, "%d.%m.%y в %H:%i") AS format_bet_create_time
             FROM lots l
             JOIN categories c ON c.id = l.category_id
             JOIN bets b ON l.id = b.lot_id
-            WHERE b.user_id = ' . $user_id . ' ORDER BY b.create_time DESC LIMIT ' . $page_items . ' OFFSET ' . $offset;
+            WHERE b.user_id = ' . $user_id . ' ORDER BY b.create_time DESC';
     $result = mysqli_query($link, $sql);
 
     if (!$result) {
@@ -465,25 +450,5 @@ function get_user_bet ($link, $user_id, $page_items, $offset) {
 
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     return $lots;
-}
-
-
-/**
- * Функция выводит массив с номерами всех страниц, необходимо ввести ID категории, используется для пагинации
- * @param $link mysqli Ресурс соединения
- * @param $user_id string ID юзера
- *
- * @return array
- */
-function get_user_count_bets ($link, $user_id) {
-    $user_id = mysqli_real_escape_string($link, $user_id);
-    $result = mysqli_query($link, 'SELECT COUNT(*) as cnt FROM bets WHERE user_id = ' . $user_id);
-
-    if (!$result) {
-        die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
-    }
-
-    $items_count = mysqli_fetch_assoc($result)['cnt'];
-    return $items_count;
 }
 

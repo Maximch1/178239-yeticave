@@ -2,7 +2,6 @@
 /**
  * @var array $categories категории лотов
  * @var array $lots список лотов
- * @var string $time_to_midnight время до полуночи
  */
 ?>
 <main class="container">
@@ -12,7 +11,8 @@
     <ul class="promo__list">
         <?php foreach ($categories as $category): ?>
             <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="all-lots.php?category=<?= $category['id']; ?>"><?= $category['title']; ?></a>
+                <a class="promo__link" href="category.php?id=<?= get_value($category,'id'); ?>">
+                    <?= get_value($category,'title'); ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -25,18 +25,18 @@
         <?php foreach ($lots as $lot): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
-                    <img src="<?= htmlspecialchars($lot['image']); ?>" width="350" height="260" alt="<?= htmlspecialchars($lot['name']); ?>">
+                    <img src="<?= htmlspecialchars(get_value($lot,'image')); ?>" width="350" height="260" alt="<?= htmlspecialchars(get_value($lot,'name')); ?>">
                 </div>
                 <div class="lot__info">
-                    <span class="lot__category"><?= $lot['category']; ?></span>
-                    <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= $lot["id"]; ?>"><?= htmlspecialchars($lot['name']); ?></a></h3>
+                    <span class="lot__category"><?= get_value($lot,'category'); ?></span>
+                    <h3 class="lot__title"><a class="text-link" href="lot.php?id=<?= get_value($lot,'id'); ?>"><?= htmlspecialchars(get_value($lot,'name')); ?></a></h3>
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?= format_price(htmlspecialchars(get_lot($link, $lot['id'])['max_rate'])); ?></span>
+                            <span class="lot__cost"><?= format_price(htmlspecialchars(get_value($lot,'price'))); ?></span>
                         </div>
                         <div class="lot__timer timer">
-                            <?= time_to_end($lot['end_time']); ?>
+                            <?= time_to_end(get_value($lot,'end_time')); ?>
                         </div>
                     </div>
                 </div>

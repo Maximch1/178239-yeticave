@@ -21,8 +21,8 @@ function validate_pagination_cur_page ($cur_page) {
  * @return string|null
  */
 function validate_pagination_count ($pages_count, $cur_page) {
-    if ($pages_count < $cur_page) {
-        return $errors = 'Страница не найдена';
+    if ($cur_page > $pages_count && $cur_page > 1) {
+        return $errors = 'Ошибка пагинации';
     }
     return null;
 }
