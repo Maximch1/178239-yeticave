@@ -47,8 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors      = array_merge($errors, $file_errors);
 
     if ( ! count($errors)) {
-        $user_data['avatar'] = add_file($user_img);
-        $insert_user         = insert_user($link, $user_data);
+        if (is_uploaded_file(get_value($user_img,'tmp_name'))) {
+            $user_data['avatar'] = add_file($user_img);
+        } else {
+            $user_data['avatar'] = '';
+        }
+        $insert_user = insert_user($link, $user_data);
     }
 
     if (isset($insert_user)) {
