@@ -12,5 +12,6 @@ function validate_category($category_id)
     if ( ! $category_id) {
         return 'Не выбрана категория';
     }
+
     return null;
 }

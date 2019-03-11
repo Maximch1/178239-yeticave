@@ -5,7 +5,7 @@
  * @var array   $user          массив с данными юзера
  * @var array   $bets          массив со ставками
  * @var string  $rate          шаг ставки введенный юзером
- * @var string  $error        ошибка
+ * @var string  $error         ошибка
  * @var boolean $show_bet_form определяем, можно ли показывать форму ввода ставки, или нет
  */
 ?>
@@ -29,7 +29,8 @@
                     <img src="<?= htmlspecialchars(get_value($lot, 'image')); ?>" width="730" height="548"
                          alt="<?= htmlspecialchars(get_value($lot, 'name')); ?>">
                 </div>
-                <p class="lot-item__category">Категория: <span><?= htmlspecialchars(get_value($lot, 'category')); ?></span></p>
+                <p class="lot-item__category">Категория: <span><?= htmlspecialchars(get_value($lot,
+                            'category')); ?></span></p>
                 <p class="lot-item__description"><?= htmlspecialchars(get_value($lot, 'description')); ?></p>
             </div>
             <div class="lot-item__right">

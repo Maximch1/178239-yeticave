@@ -21,22 +21,22 @@ $config = require 'config.php';
 
 $link = db_connect(get_value($config, 'db'));
 
-$categories = get_categories($link);
-$user       = null;
+$categories  = get_categories($link);
+$user        = null;
 $error       = null;
 $category_id = null;
-$lots = null;
-$pages = null;
+$lots        = null;
+$pages       = null;
 $pages_count = null;
 
 if (is_auth()) {
     $user = get_user_by_id($link, $_SESSION['user_id']);
 }
 
-$category_id    = (int)get_value($_GET, 'id');
-$cur_page       = get_value($_GET, 'page') ?? 1;
-$page_items     = $config['pagination']['items_per_page'];
-$error          = validate_category($category_id);
+$category_id = (int)get_value($_GET, 'id');
+$cur_page    = get_value($_GET, 'page') ?? 1;
+$page_items  = $config['pagination']['items_per_page'];
+$error       = validate_category($category_id);
 if ( ! $error) {
     $error = validate_pagination_cur_page($cur_page);
 }
