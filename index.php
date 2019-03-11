@@ -8,11 +8,11 @@ error_reporting(E_ALL);
 $title = 'Главная';
 
 
-require_once ('functions/template.php');
-require_once ('functions/db.php');
-require_once ('functions/user.php');
+require_once('functions/template.php');
+require_once('functions/db.php');
+require_once('functions/user.php');
 
-if (!file_exists ('config.php')) {
+if ( ! file_exists('config.php')) {
     die('Создайте файл config.php на основе config.sample.php');
 }
 
@@ -20,10 +20,10 @@ $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
-update_lot_winner ($link);
+update_lot_winner($link);
 $categories = get_categories($link);
-$lots = get_lots($link);
-$user = null;
+$lots       = get_lots($link);
+$user       = null;
 
 if (is_auth()) {
     $user = get_user_by_id($link, get_value($_SESSION, 'user_id'));
@@ -31,14 +31,14 @@ if (is_auth()) {
 
 $content = include_template('index.php', [
     'categories' => $categories,
-    'lots' => $lots,
+    'lots'       => $lots,
 ]);
 
 $layout = include_template('layout.php', [
-    'content' => $content,
+    'content'    => $content,
     'title'      => $title,
     'categories' => $categories,
-    'user' => $user
+    'user'       => $user
 ]);
 
 print $layout;

@@ -7,12 +7,12 @@ error_reporting(E_ALL);
 
 $title = 'Регистрация нового аккаунта';
 
-require_once ('functions/template.php');
-require_once ('functions/db.php');
-require_once ('functions/validators_user.php');
-require_once ('functions/user.php');
+require_once('functions/template.php');
+require_once('functions/db.php');
+require_once('functions/validators_user.php');
+require_once('functions/user.php');
 
-if (!file_exists ('config.php')) {
+if ( ! file_exists('config.php')) {
     die('Создайте файл config.php на основе config.sample.php');
 }
 
@@ -28,27 +28,27 @@ if (is_auth()) {
 }
 
 $categories = get_categories($link);
-$errors = [];
-$signup = [];
-$user_data = null;
-$user = null;
+$errors     = [];
+$signup     = [];
+$user_data  = null;
+$user       = null;
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!get_value($_POST,'signup')) {
+    if ( ! get_value($_POST, 'signup')) {
         die('Некорректные данные для регистрации');
     }
 
-    $user_data = get_value($_POST,'signup');
-    $user_img =  get_value($_FILES,'avatar');
+    $user_data = get_value($_POST, 'signup');
+    $user_img  = get_value($_FILES, 'avatar');
 
-    $errors = validate_user($link, $user_data);
-    $file_errors = validate_user_file_avatar(get_value($user_img,'tmp_name'));
-    $errors = array_merge($errors, $file_errors);
+    $errors      = validate_user($link, $user_data);
+    $file_errors = validate_user_file_avatar(get_value($user_img, 'tmp_name'));
+    $errors      = array_merge($errors, $file_errors);
 
-    if (!count($errors)) {
+    if ( ! count($errors)) {
         $user_data['avatar'] = add_file($user_img);
-        $insert_user = insert_user($link, $user_data);
+        $insert_user         = insert_user($link, $user_data);
     }
 
     if (isset($insert_user)) {
@@ -67,7 +67,7 @@ $layout = include_template('layout.php', [
     'content'    => $content,
     'title'      => $title,
     'categories' => $categories,
-    'user' => $user,
+    'user'       => $user,
 ]);
 
 

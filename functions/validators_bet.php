@@ -2,27 +2,30 @@
 
 /**
  * Функция проводит проверку на ошибки формы ставки
- * @param $user_id_auth int ID авторизированного юзера
- * @param $bet_rate     int сумма ставки
- * @param $lot          array массив лота
+ *
+ * @param $user_id_auth     int ID авторизированного юзера
+ * @param $bet_rate         int сумма ставки
+ * @param $lot              array массив лота
  * @param $last_bet         array массив ставок
  *
  * @return array массив ошибок
  */
-function validate_bet ($user_id_auth, $bet_rate, $lot, $last_bet) {
+function validate_bet($user_id_auth, $bet_rate, $lot, $last_bet)
+{
     $errors = [];
 
-    if ($error = validate_bet_user($user_id_auth, get_value($lot,'user_id'), get_value($last_bet,'user_id'))) {
+    if ($error = validate_bet_user($user_id_auth, get_value($lot, 'user_id'), get_value($last_bet, 'user_id'))) {
         $errors = $error;
     }
 
-    if ($error = validate_bet_end_time(get_value($lot,'end_time'))) {
+    if ($error = validate_bet_end_time(get_value($lot, 'end_time'))) {
         $errors = $error;
     }
 
-    if ($error = validate_bet_rate($bet_rate, get_value($lot,'max_rate'), get_value($lot,'step_rate'))) {
+    if ($error = validate_bet_rate($bet_rate, get_value($lot, 'max_rate'), get_value($lot, 'step_rate'))) {
         $errors = $error;
     }
+
     return $errors;
 }
 
@@ -36,7 +39,8 @@ function validate_bet ($user_id_auth, $bet_rate, $lot, $last_bet) {
  *
  * @return string|null
  */
-function validate_bet_user ($user_id_auth, $user_id_lot, $user_id_bet) {
+function validate_bet_user($user_id_auth, $user_id_lot, $user_id_bet)
+{
     if ($user_id_auth === $user_id_lot) {
         return 'Своему лоту сделать ставку нельзя';
     }
@@ -50,35 +54,40 @@ function validate_bet_user ($user_id_auth, $user_id_lot, $user_id_bet) {
 
 /**
  * Функция проверяет временной промежуток, нельзя сделать ставку после истечения даты окончания торгов
+ *
  * @param $end_time string дата окончания торгов
  *
  * @return string|null
  */
-function validate_bet_end_time ($end_time){
+function validate_bet_end_time($end_time)
+{
     if (time() < $end_time) {
         return 'Торги окончены';
     }
+
     return null;
 }
 
 /**
  * Функция проверяет сумму ставки на валидность
- * @param $rate int сумма ставки
- * @param $max_rate int максимальная сумма ставки
+ *
+ * @param $rate      int сумма ставки
+ * @param $max_rate  int максимальная сумма ставки
  * @param $step_rate int шаг ставки
  *
  * @return string|null
  */
-function validate_bet_rate ($rate, $max_rate, $step_rate){
+function validate_bet_rate($rate, $max_rate, $step_rate)
+{
     if (empty($rate)) {
         return 'Введите сумму';
     }
 
-    if (!is_numeric($rate)) {
+    if ( ! is_numeric($rate)) {
         return 'Значение должно быть числом';
     }
 
-    if (!ctype_digit($rate)) {
+    if ( ! ctype_digit($rate)) {
         return 'Введите целое число';
     }
 
@@ -93,6 +102,7 @@ function validate_bet_rate ($rate, $max_rate, $step_rate){
     if ($rate < 0) {
         return 'Цена не должна быть отрицательной';
     }
+
     return null;
 }
 

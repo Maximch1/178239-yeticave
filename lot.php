@@ -7,13 +7,13 @@ error_reporting(E_ALL);
 
 $title = 'Лот';
 
-require_once ('functions/template.php');
-require_once ('functions/db.php');
-require_once ('functions/validators_lot.php');
-require_once ('functions/validators_bet.php');
-require_once ('functions/user.php');
+require_once('functions/template.php');
+require_once('functions/db.php');
+require_once('functions/validators_lot.php');
+require_once('functions/validators_bet.php');
+require_once('functions/user.php');
 
-if (!file_exists ('config.php')) {
+if ( ! file_exists('config.php')) {
     die('Создайте файл config.php на основе config.sample.php');
 }
 
@@ -28,31 +28,31 @@ if (is_auth()) {
 }
 
 $categories = get_categories($link);
-$lot_id = get_value($_GET,'id');
+$lot_id     = get_value($_GET, 'id');
 
-if (!$lot_id) {
+if ( ! $lot_id) {
     die('Отсутствует id лота');
 }
-if (!is_numeric($lot_id)) {
+if ( ! is_numeric($lot_id)) {
     die('Некорректный тип у id лота');
 }
 
-$lot = get_lot($link, $lot_id);
-$bets = get_bets_by_lot_id($link, $lot_id);
-$errors = null;
+$lot      = get_lot($link, $lot_id);
+$bets     = get_bets_by_lot_id($link, $lot_id);
+$errors   = null;
 $bet_rate = null;
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!get_value($_POST,'rate')) {
+    if ( ! get_value($_POST, 'rate')) {
         die('Некорректные данные для добавления ставки');
     }
 
-    $bet_rate = get_value($_POST,'rate');
-    $errors = validate_bet(get_value($user,'id'), $bet_rate, $lot, get_value($bets,0));
+    $bet_rate = get_value($_POST, 'rate');
+    $errors   = validate_bet(get_value($user, 'id'), $bet_rate, $lot, get_value($bets, 0));
 
-    if (!count($errors)) {
-        $bet_rate_id = insert_bet($link, $bet_rate, get_value($user,'id'), $lot_id);
+    if ( ! count($errors)) {
+        $bet_rate_id = insert_bet($link, $bet_rate, get_value($user, 'id'), $lot_id);
         header("Location: lot.php?id=" . $lot_id);
         exit();
     }
@@ -60,28 +60,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $show_bet_form = show_bet_form($user, $lot, get_value($bets, 0));
 
-if (!$lot) {
+if ( ! $lot) {
     $content = include_template('404.php', [
         'categories' => $categories,
     ]);
-}
-else {
+} else {
     $content = include_template('lot.php', [
-        'categories' => $categories,
-        'lot'        => $lot,
-        'user'       => $user,
-        'bets'       => $bets,
-        'errors'     => $errors,
-        'rate'       => $bet_rate,
+        'categories'    => $categories,
+        'lot'           => $lot,
+        'user'          => $user,
+        'bets'          => $bets,
+        'errors'        => $errors,
+        'rate'          => $bet_rate,
         'show_bet_form' => $show_bet_form,
     ]);
 }
 
 $layout = include_template('layout.php', [
-    'content' => $content,
+    'content'    => $content,
     'title'      => $title,
     'categories' => $categories,
-    'user' => $user,
+    'user'       => $user,
 ]);
 
 print $layout;
