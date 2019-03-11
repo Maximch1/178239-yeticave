@@ -7,7 +7,7 @@
 *.sublime*
 Thumbs.db
 vendor
-uploads
 config.php
 test.php
-uploads
+uploads/*
+!uploads/.gitkeep

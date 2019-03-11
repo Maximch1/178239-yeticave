@@ -5,8 +5,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$title = 'Главная';
-
+$title = 'Мои ставки';
 
 require_once('functions/template.php');
 require_once('functions/db.php');
@@ -20,26 +19,27 @@ $config = require 'config.php';
 
 $link = db_connect($config['db']);
 
-update_lot_winner($link);
 $categories = get_categories($link);
-$lots       = get_lots($link);
 $user       = null;
 
 if (is_auth()) {
     $user = get_user_by_id($link, get_value($_SESSION, 'user_id'));
 }
 
-$content = include_template('index.php', [
+$bets = get_user_bets($link, get_value($user, 'id'));
+
+$content = include_template('my-bets.php', [
     'categories' => $categories,
-    'lots'       => $lots,
+    'bets'       => $bets,
 ]);
 
 $layout = include_template('layout.php', [
     'content'    => $content,
     'title'      => $title,
     'categories' => $categories,
-    'user'       => $user
+    'user'       => $user,
 ]);
 
 print $layout;
+
 

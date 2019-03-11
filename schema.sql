@@ -27,7 +27,7 @@ CREATE TABLE lots (
   image VARCHAR(255) NOT NULL,
   category_id INT NOT NULL,
   price INT NOT NULL,
-  end_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NULL,
   step_rate INT NOT NULL,
   user_id INT NOT NULL,
   winner_id INT
@@ -48,3 +48,4 @@ CREATE TABLE bets (
 ALTER TABLE bets ADD FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 ALTER TABLE bets ADD FOREIGN KEY (lot_id) REFERENCES lots(id) ON DELETE CASCADE;
 
+CREATE FULLTEXT INDEX lot_search ON lots(title, description)
