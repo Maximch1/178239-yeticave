@@ -1,13 +1,22 @@
 <?php
 session_start();
-date_default_timezone_set("Europe/Moscow");
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $title = 'Лот';
 
-require_once ('functions/template.php');
-require_once ('functions/db.php');
-require_once ('functions/validators_lot.php');
-require_once ('functions/validators_bet.php');
-require_once ('functions/user.php');
+require_once('functions/template.php');
+require_once('functions/db.php');
+require_once('functions/validators_lot.php');
+require_once('functions/validators_bet.php');
+require_once('functions/user.php');
+
+if ( ! file_exists('config.php')) {
+    die('Создайте файл config.php на основе config.sample.php');
+}
+
 $config = require 'config.php';
 
 $link = db_connect($config['db']);
@@ -15,61 +24,60 @@ $link = db_connect($config['db']);
 $user = null;
 
 if (is_auth()) {
-    $user = get_user_by_id($link, $_SESSION['user_id']);
+    $user = get_user_by_id($link, get_value($_SESSION, 'user_id'));
 }
 
 $categories = get_categories($link);
+$lot_id     = get_value($_GET, 'id');
 
-if (!isset($_GET['id'])) {
+if ( ! $lot_id) {
     die('Отсутствует id лота');
 }
-if (!is_numeric($_GET['id'])) {
+if ( ! is_numeric($lot_id)) {
     die('Некорректный тип у id лота');
 }
 
-$lot_id = (int)$_GET['id'];
-$lot = get_lot($link, $lot_id);
-$bets = get_bets_by_lot_id($link, $lot_id);
-$errors = [];
+$lot      = get_lot($link, $lot_id);
+$bets     = get_bets_by_lot_id($link, $lot_id);
+$error    = null;
+$bet_rate = null;
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['rate'])) {
-        die('Некорректные данные для добавления ставки');
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $bet_rate = $_POST['rate'];
-    $errors = validate_bet($user['id'], $bet_rate, $lot, $bets);
+    $bet_rate = get_value($_POST, 'rate');
+    $error    = validate_bet(get_value($user, 'id'), $bet_rate, $lot, get_value($bets, 0));
 
-    if (!count($errors)) {
-        $bet_rate_id = insert_bet($link, $bet_rate, $user['id'], $lot_id);
-    }
-    if ($bet_rate_id) {
+    if ( ! $error) {
+        $bet_rate_id = insert_bet($link, $bet_rate, get_value($user, 'id'), $lot_id);
         header("Location: lot.php?id=" . $lot_id);
         exit();
     }
 }
 
-if (!$lot) {
+$show_bet_form = show_bet_form($user, $lot, get_value($bets, 0));
+
+if ( ! $lot) {
     $content = include_template('404.php', [
         'categories' => $categories,
     ]);
-}
-else {
+} else {
     $content = include_template('lot.php', [
-        'categories' => $categories,
-        'lot'        => $lot,
-        'user'       => $user,
-        'bets'       => $bets,
-        'errors'     => $errors,
+        'categories'    => $categories,
+        'lot'           => $lot,
+        'user'          => $user,
+        'bets'          => $bets,
+        'error'         => $error,
+        'rate'          => $bet_rate,
+        'show_bet_form' => $show_bet_form,
     ]);
 }
 
 $layout = include_template('layout.php', [
-    'content' => $content,
+    'content'    => $content,
     'title'      => $title,
     'categories' => $categories,
-    'user' => $user,
+    'user'       => $user,
 ]);
 
 print $layout;

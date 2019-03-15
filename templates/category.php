@@ -1,12 +1,13 @@
 <?php
 /**
- * @var array  $categories  категории лотов
- * @var array  $lots        массив с данными лотов
- * @var array  $pages       массив с номерами страниц
- * @var float  $pages_count количество страниц
- * @var int    $cur_page    текущая страница
- * @var string $search      поисковый запрос
- * @var string $error       ошибка
+ * @var array  $categories     категории лотов
+ * @var array  $lots           массив с данными лотов
+ * @var array  $pages          массив с номерами страниц
+ * @var float  $pages_count    количество страниц
+ * @var int    $cur_page       текущая страница
+ * @var string $category_title наименование категории
+ * @var int    $category_id    ID категории
+ * @var string $error          ошибка
  */
 ?>
 <main>
@@ -24,7 +25,7 @@
     <div class="container">
         <section class="lots">
             <?php if ( ! $error): ?>
-                <h2>Результаты поиска по запросу «<span><?= htmlspecialchars($search); ?></span>»</h2>
+                <h2>Все лоты в категории <span><?= $category_title; ?></span></h2>
                 <ul class="lots__list">
                     <?php foreach ($lots as $lot): ?>
                         <li class="lots__item lot">
@@ -43,7 +44,7 @@
                                                 'price'))); ?></span>
                                     </div>
                                     <div class="lot__timer timer">
-                                        <?= time_to_end(get_value($lot, 'end_time')); ?>
+                                        <?= time_to_end(htmlspecialchars(get_value($lot, 'end_time'))); ?>
                                     </div>
                                 </div>
                             </div>
@@ -57,15 +58,15 @@
         <?php if ($pages_count > 1): ?>
             <ul class="pagination-list">
                 <li class="pagination-item pagination-item-prev"><a
-                        <?php if ($cur_page != 1): ?>href="search.php?search=<?= $search; ?>&page=<?= $cur_page - 1; ?>"<?php endif; ?>>Назад</a>
+                        <?php if ($cur_page != 1): ?>href="category.php?id=<?= $category_id; ?>&page=<?= $cur_page - 1; ?>"<?php endif; ?>>Назад</a>
                 </li>
                 <?php foreach ($pages as $page): ?>
                     <li class="pagination-item <?php if ((int)$page === $cur_page): ?>pagination-item-active<?php endif; ?>">
-                        <a href="search.php?search=<?= $search; ?>&page=<?= $page; ?>"><?= $page; ?></a>
+                        <a href="category.php?id=<?= $category_id; ?>&page=<?= $page; ?>"><?= $page; ?></a>
                     </li>
                 <?php endforeach; ?>
                 <li class="pagination-item pagination-item-next"><a
-                        <?php if ($cur_page != $pages_count): ?>href="search.php?search=<?= $search; ?>&page=<?= $cur_page + 1; ?>"<?php endif; ?>>Вперед</a>
+                        <?php if ($cur_page != $pages_count): ?>href="category.php?id=<?= $category_id; ?>&page=<?= $cur_page + 1; ?>"<?php endif; ?>>Вперед</a>
                 </li>
             </ul>
         <?php endif; ?>
