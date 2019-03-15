@@ -413,10 +413,11 @@ function get_search_count_lot($link, $search)
 
 /**
  * Функция вносит победителей в таблицу лотов, определяя их по дате завершения лота.
+ * Выводит массив с данными победившего лота и юзера
  *
  * @param $link mysqli Ресурс соединения
  *
- * @return null
+ * @return array|null
  */
 function update_lot_winner($link)
 {
@@ -429,17 +430,29 @@ function update_lot_winner($link)
 
     $lots = mysqli_fetch_all($result, MYSQLI_ASSOC);
     if ($lots) {
+        $lots_win = [];
         foreach ($lots as $lot_id) {
             if (strtotime(get_value($lot_id, 'end_time')) < time()) {
-                $sql = 'UPDATE lots SET winner_id = (SELECT user_id FROM bets WHERE rate = (SELECT MAX(rate) FROM bets WHERE lot_id = ' . get_value($lot_id,
-                        'id') . ' )) WHERE id = ' . get_value($lot_id, 'id');
+                $winner_id = 'SELECT user_id FROM bets WHERE rate = (SELECT MAX(rate) FROM bets WHERE lot_id = ' . get_value($lot_id, 'id') . ' )';
+                $sql = 'UPDATE lots SET winner_id = (' . $winner_id . ') WHERE id = ' . get_value($lot_id, 'id');
                 $res = mysqli_query($link, $sql);
 
                 if ( ! $res) {
                     die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
                 }
+
+                $sql = 'SELECT l.id, l.title, u.name, u.email FROM lots l JOIN users u ON l.winner_id = u.id WHERE  l.id = ' . get_value($lot_id, 'id');
+                $result = mysqli_query($link, $sql);
+
+                if ( ! $result) {
+                    die('При выполнении запроса произошла ошибка:' . mysqli_error($link));
+                }
+
+                $lots_win[] = mysqli_fetch_all($result, MYSQLI_ASSOC);
             }
         }
+        var_dump($lots_win);
+        return $lots_win;
     }
 
     return null;
