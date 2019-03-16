@@ -451,7 +451,6 @@ function update_lot_winner($link)
                 $lots_win[] = mysqli_fetch_all($result, MYSQLI_ASSOC);
             }
         }
-        var_dump($lots_win);
         return $lots_win;
     }
 
