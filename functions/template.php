@@ -167,3 +167,31 @@ function get_value($array, $key)
     return $array[$key];
 }
 
+
+function send_mailer($config, $subject, $set_to, $set_from){
+    if ($set_to) {
+        $transport = new Swift_SmtpTransport($config['host'], $config['port']);
+        $transport->setUsername($config['username']);
+        $transport->setPassword($config['password']);
+
+        $mailer = new Swift_Mailer($transport);
+
+        $logger = new Swift_Plugins_Loggers_ArrayLogger();
+        $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+
+        $message = new Swift_Message();
+        $message->setSubject($subject);
+        $message->setFrom($set_from);
+        $message->setTo($set_to);
+
+        //$msg_content = include_template('email.php', []);
+        //$message->setBody($msg_content, 'text/html');
+
+        $mailer = new Swift_Mailer($transport);
+        $result = $mailer->send($message);
+        if ($result) {
+            return $result;
+        }
+        return false;
+    }
+}

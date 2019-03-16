@@ -14,38 +14,12 @@ $link = db_connect($config['db']);
 //$transport->setUsername("d5f1803dfc24be");
 //$transport->setPassword("cc78c3dde097d9");
 
-$transport = new Swift_SmtpTransport("phpdemo.ru", 25);
-$transport->setUsername("keks@phpdemo.ru");
-$transport->setPassword("htmlacademy");
-
-$mailer = new Swift_Mailer($transport);
-
-$logger = new Swift_Plugins_Loggers_ArrayLogger();
-$mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+$subject = 'Ваша ставка победила';
+$set_to = ['maximch@bk.ru' => 'Max'];
+$set_from = ['keks@phpdemo.ru' => 'htmlacademy'];
 
 
-$message = new Swift_Message();
-$message->setSubject("Ваша ставка победила");
-//$message->setFrom(['keks@phpdemo.ru' => 'htmlacademy']);
-//$message->setTo(['maximch@bk.ru' => 'Max']);
-$message->setTo("maximch@bk.ru", "Max");
-
-//$msg_content = include_template('email.php', []);
-//$message->setBody($msg_content, 'text/html');
-
-$message->setFrom("mail@giftube.academy", "GifTube");
-
-$mailer = new Swift_Mailer($transport);
-$result = $mailer->send($message);
-
-if ($result) {
-    print("Рассылка успешно отправлена");
-}
-else {
-    print("Не удалось отправить рассылку: " . $logger->dump());
-}
-
-
+send_mailer($config['mailer'], $subject, $set_to, $set_from);
 
 
 
