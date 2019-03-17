@@ -11,7 +11,7 @@ require_once ('vendor/autoload.php');
 require_once('functions/template.php');
 require_once('functions/db.php');
 require_once('functions/user.php');
-//require_once('getwinner.php');
+require_once('getwinner.php');
 
 if ( ! file_exists('config.php')) {
     die('Создайте файл config.php на основе config.sample.php');
