@@ -168,9 +168,9 @@ function get_value($array, $key)
 }
 
 
-function send_mailer($config, $subject, $set_to, $set_from){
+function send_mailer($config, $subject, $set_to, $set_from, $set_body){
     if ($set_to) {
-        $transport = new Swift_SmtpTransport($config['host'], $config['port']);
+        $transport = new Swift_SmtpTransport($config['host'], $config['port'], $config['encrypt']);
         $transport->setUsername($config['username']);
         $transport->setPassword($config['password']);
 
@@ -183,9 +183,7 @@ function send_mailer($config, $subject, $set_to, $set_from){
         $message->setSubject($subject);
         $message->setFrom($set_from);
         $message->setTo($set_to);
-
-        //$msg_content = include_template('email.php', []);
-        //$message->setBody($msg_content, 'text/html');
+        $message->setBody($set_body, 'text/html');
 
         $mailer = new Swift_Mailer($transport);
         $result = $mailer->send($message);
@@ -194,4 +192,5 @@ function send_mailer($config, $subject, $set_to, $set_from){
         }
         return false;
     }
+    return null;
 }

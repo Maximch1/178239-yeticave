@@ -10,17 +10,17 @@ require_once ('functions/db.php');
 $config = require 'config.php';
 $link = db_connect($config['db']);
 
-//$transport = new Swift_SmtpTransport("smtp.mailtrap.io", 25);
-//$transport->setUsername("d5f1803dfc24be");
-//$transport->setPassword("cc78c3dde097d9");
+$winners = update_lot_winner($link);
 
-$subject = 'Ваша ставка победила';
-$set_to = ['maximch@bk.ru' => 'Max'];
-$set_from = ['keks@phpdemo.ru' => 'htmlacademy'];
-
-
-send_mailer($config['mailer'], $subject, $set_to, $set_from);
-
-
-
-
+if ($winners) {
+    foreach ($winners['0'] as $win) {
+        $subject  = 'Ваша ставка победила';
+        $set_to   = ['maxkhb@gmail.com' => 'Max'];
+        $set_from = [$win['email'] => $win['name']];
+        $set_body = include_template('email.php', [
+            'lot_id' => $win['id'],
+            'name'   => $win['title'],
+        ]);
+        send_mailer($config['mailer'], $subject, $set_to, $set_from, $set_body);
+    }
+}

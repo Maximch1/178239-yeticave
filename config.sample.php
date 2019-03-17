@@ -8,5 +8,11 @@ return [
     ],
     'pagination' => [
         'items_per_page' => 9
-    ]
+    ],
+    'mailer' => [
+    'host' => '',
+    'port' => 25,
+    'username' => '',
+    'password' => '',
+]
 ];

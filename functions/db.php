@@ -453,7 +453,6 @@ function update_lot_winner($link)
         }
         return $lots_win;
     }
-
     return null;
 }
 
